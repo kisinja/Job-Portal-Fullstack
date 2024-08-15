@@ -1,10 +1,13 @@
 import { useState } from "react";
 import { useLogin } from "../hooks/useLogin";
+import FlashMessage from "../components/FlashMessage";
 
 const Login = () => {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    const [flashMessage, setFlashMessage] = useState('');
 
     const { login, error, loading } = useLogin();
 
@@ -12,11 +15,20 @@ const Login = () => {
         e.preventDefault();
 
         await login(email, password);
+
+        setFlashMessage(error || 'Login successful');
+    };
+
+    const clearMessage = () => {
+        setFlashMessage('');
     };
 
 
     return (
         <section id="login-page">
+
+            <FlashMessage message={flashMessage} clearMessage={clearMessage} />
+
             <form onSubmit={handleSubmit} className="bg-white py-8 px-12 min-w-screen-lg">
                 <h1 className="text-3xl mb-3">Login</h1>
                 <div className="flex flex-col mb-3">

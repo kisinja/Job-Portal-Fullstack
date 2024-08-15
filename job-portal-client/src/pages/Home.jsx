@@ -104,7 +104,7 @@ const Home = () => {
             />
 
             {/* main content */}
-            <div className="bg-[#fafafa] md:grid grid-cols-4 gap-8 lg:px-24 px-4 py-12">
+            <div className="bg-[#fafafa] md:grid grid-cols-4 gap-8 lg:px-[60px] px-4 py-12">
                 {/* left side */}
                 <div className="bg-white p-4 rounded">
                     <Sidebar handleChange={handleChange} handleClick={handleClick} />

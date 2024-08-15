@@ -20,16 +20,18 @@ const App = () => {
   return (
     <div>
       <Navbar />
-      <Routes>
-        <Route path="/" exact element={user ? <Home /> : <Navigate to="/login" />} />
-        <Route path="/about" element={user ? <About /> : <Navigate to="/login" />} />
-        <Route path="/my-jobs" element={user ? <MyJobs /> : <Navigate to="/login" />} />
-        <Route path="/salary" element={user ? <Salary /> : <Navigate to="/login" />} />
-        <Route path="/post-job" element={user ? <PostJob /> : <Navigate to="/login" />} />
-        <Route path="/profile" element={user ? <Profile /> : <Navigate to="/login" />} />
-        <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
-        <Route path="/signup" element={!user ? <SignUp /> : <Navigate to="/" />} />
-      </Routes>
+      <div className="px-[2%] md:px-0">
+        <Routes>
+          <Route path="/" exact element={user ? <Home /> : <Navigate to="/login" />} />
+          <Route path="/about" element={user ? <About /> : <Navigate to="/login" />} />
+          <Route path="/my-jobs" element={user ? <MyJobs /> : <Navigate to="/login" />} />
+          <Route path="/salary" element={user ? <Salary /> : <Navigate to="/login" />} />
+          <Route path="/post-job" element={user ? <PostJob /> : <Navigate to="/login" />} />
+          <Route path="/profile" element={user ? <Profile /> : <Navigate to="/login" />} />
+          <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
+          <Route path="/signup" element={!user ? <SignUp /> : <Navigate to="/" />} />
+        </Routes>
+      </div>
       <Footer />
     </div>
   )

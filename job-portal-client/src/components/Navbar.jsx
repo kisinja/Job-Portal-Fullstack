@@ -106,6 +106,7 @@ const Navbar = () => {
                                         ? 'active'
                                         : ''
                                 }
+                                onClick={handleMenuToggler}
                             >
                                 {title}
                             </NavLink>
@@ -114,8 +115,13 @@ const Navbar = () => {
                     {
                         user ? (
                             <>
-                                <li className='text-blue'>Hi, {user.email}</li>
-                                <Link to="/profile" className="text-white">Profile</Link>
+                                <li className='text-gray-500'>Hi, {user.email}</li>
+                                <li>
+                                    <Link to="/profile" className="text-white">Profile</Link>
+                                </li>
+                                <li>
+                                    <Link to="" className=" text-white" onClick={handleClick}>Log out</Link>
+                                </li>
                             </>
                         ) : (
                             <>
