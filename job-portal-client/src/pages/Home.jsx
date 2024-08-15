@@ -3,6 +3,7 @@ import Card from '../components/Card';
 import Banner from '../components/Banner';
 import Jobs from './Jobs';
 import Sidebar from '../sidebar/Sidebar';
+import NewsLetter from '../components/NewsLetter';
 
 const Home = () => {
     const [selectedCategory, setSelectedCategory] = useState(null);
@@ -73,11 +74,12 @@ const Home = () => {
 
         // category based filtering
         if (selected) {
-            filteredJobs = filteredJobs.filter(({ jobLocation, maxPrice, salaryType, employmentType }) => (
+            filteredJobs = filteredJobs.filter(({ jobLocation, maxPrice, salaryType, employmentType, postingDate, experienceLevel }) => (
                 jobLocation.toLowerCase() === selected.toLowerCase() ||
                 parseInt(maxPrice) <= parseInt(selected) ||
+                postingDate >= selected ||
                 salaryType.toLowerCase() === selected.toLowerCase() ||
-                employmentType.toLowerCase() === selected.toLowerCase()
+                employmentType.toLowerCase() === selected.toLowerCase() || experienceLevel.toLowerCase() === selected.toLowerCase()
             ));
             console.log(filteredJobs);
         }
@@ -134,7 +136,10 @@ const Home = () => {
                 </div>
 
                 {/* right side */}
-                <div className="bg-white p-4 rounded">Right</div>
+                <div className="bg-white p-4 rounded">
+                    <h3 className="font-bold text-2xl text-primary">Newsletter</h3>
+                    <NewsLetter />
+                </div>
             </div>
         </div>
     )

@@ -1,66 +1,75 @@
-import axios from 'axios';
-import { useState } from 'react';
+import { useState } from "react";
+import { useSignUp } from '../hooks/useSignUp';
+import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {
-    const [image, setImage] = useState(null);
 
-    const handleChange = (e) => {
-        const file = e.target.files[0];
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
-        // Check if the file size exceeds 5MB (5 * 1024 * 1024 bytes)
-        if (file && file.size > 5 * 1024 * 1024) {
-            alert('File size exceeds 5MB. Please choose a smaller file.');
-            return; // Stop further processing
-        }
+    const { error, loading, signUp } = useSignUp();
 
-        setImage(file);
-    };
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!image) {
-            alert('Please select an image to upload.');
-            return;
-        }
+        await signUp(username, email, password);
 
-        const formData = new FormData();
-        formData.append('profilePic', image); // 'profilePic' should match the backend field name
+        navigate('/login');
 
-        try {
-            const response = await axios.post('http://localhost:7777/api/uploadPic', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
-
-            console.log('Image uploaded successfully:', response.data);
-            // Handle success (e.g., display a success message, redirect, etc.)
-        } catch (error) {
-            console.error('Error uploading image:', error.response ? error.response.data : error.message);
-            // Handle error (e.g., display an error message)
-        }
+        setUsername('');
+        setEmail('');
+        setPassword('');
     };
 
-    return (
-        <div>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Profile Picture:</label>
-                    <input type="file" name="profilePic" onChange={handleChange} />
-                </div>
-                <button type="submit">Upload Image</button>
-            </form>
 
-            {/* Display the uploaded image */}
-            {image && (
-                <div>
-                    <h2>Preview:</h2>
-                    <img src={URL.createObjectURL(image)} alt="Preview" style={{ width: '100%' }} />
+    return (
+        <section id="signup-page">
+            <form onSubmit={handleSubmit} className="bg-white py-8 px-12 min-w-screen-lg">
+                <h1 className="text-3xl mb-2">Sign Up</h1>
+                <div className="flex flex-col mb-3">
+                    <label htmlFor="name" className="text-base text-primary">Username</label>
+                    <input
+                        type="text"
+                        autoComplete="off" name="username" id="username"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        className="border-2 rounded-md p-1 outline-none w-full"
+                    />
                 </div>
-            )}
-        </div>
+                <div className="flex flex-col mb-3">
+                    <label htmlFor="email">Email</label>
+                    <input
+                        type="email"
+                        autoComplete="off" name="email" id="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="border-2 rounded-md p-1 outline-none w-full"
+                    />
+                </div>
+                <div className="flex flex-col mb-3">
+                    <label htmlFor="password">Password</label>
+                    <input
+                        type="password"
+                        autoComplete="off" name="password" id="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="border-2 rounded-md p-1 outline-none w-full"
+                    />
+                </div>
+
+                <p className="text-sm text-primary">
+                    Already have an account? <a href="/login" className="text-blue">Login</a>
+                </p>
+
+                {error && <div className="error">{error}</div>}
+
+                <button type="submit" className="mx-auto bg-blue text-white py-2 px-5 rounded-md flex justify-center items-center mt-3" disabled={loading}>Sign Up</button>
+            </form>
+        </section>
     );
 };
 
-export default SignUp;
+export default SignUp

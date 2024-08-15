@@ -18,10 +18,10 @@ const Salary = ({ handleChange, handleClick }) => {
                     <span className="checkmark"></span>All
                 </label>
 
-                <InputField handleChange={handleChange} name="test2" value={30} title="< 30000k" />
-                <InputField handleChange={handleChange} name="test3" value={50} title="< 50000k" />
-                <InputField handleChange={handleChange} name="test4" value={80} title="< 80000k" />
-                <InputField handleChange={handleChange} name="test5" value={100} title="< 100000k" />
+                <InputField handleChange={handleChange} name="test" value={30} title="< 30000k" />
+                <InputField handleChange={handleChange} name="test" value={50} title="< 50000k" />
+                <InputField handleChange={handleChange} name="test" value={80} title="< 80000k" />
+                <InputField handleChange={handleChange} name="test" value={100} title="< 100000k" />
             </div>
         </div>
     )

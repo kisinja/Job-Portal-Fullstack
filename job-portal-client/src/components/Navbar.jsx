@@ -1,10 +1,13 @@
 import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { FaBarsStaggered as FaBar, FaXmark } from 'react-icons/fa6';
+import { useAuthContext } from '../hooks/useAuthContext';
 
 const Navbar = () => {
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+    const { user } = useAuthContext();
 
     const handleMenuToggler = () => {
         setIsMenuOpen(!isMenuOpen);
@@ -28,6 +31,12 @@ const Navbar = () => {
             path: '/post-job'
         }
     ];
+
+    const handleClick = () => {
+        localStorage.removeItem('user');
+
+        window.location.href = '/';
+    };
 
     return (
         <header className='max-w-screen-2xl container mx-auto xl:px-24 px-4 shadow-sm'>
@@ -60,8 +69,19 @@ const Navbar = () => {
 
                 {/* Signup and login buttons */}
                 <div className="text-base font-medium space-x-5 hidden lg:block">
-                    <Link to="/login" className="py-2 px-5 border rounded">Log In</Link>
-                    <Link to="/signup" className="py-2 px-5 border rounded bg-blue text-white">Sign up</Link>
+                    {
+                        user ? (
+                            <>
+                                <Link to="/profile" className="py-2 px-5 border rounded">Profile</Link>
+                                <Link to="" className="py-2 px-5 border rounded bg-red-600 text-white" onClick={handleClick}>Log out</Link>
+                            </>
+                        ) : (
+                            <>
+                                <Link to="/login" className="py-2 px-5 border rounded">Log In</Link>
+                                <Link to="/signup" className="py-2 px-5 border rounded bg-blue text-white">Sign up</Link>
+                            </>
+                        )
+                    }
                 </div>
 
                 {/* mobile menu */}
@@ -72,10 +92,10 @@ const Navbar = () => {
                         }
                     </button>
                 </div>
-            </nav>
+            </nav >
 
             {/* Nav items for mobile devices */}
-            <div className={`px-4 bg-black py-5 rounded-sm ${isMenuOpen ? "" : "hidden"}`}>
+            < div className={`px-4 bg-black py-5 rounded-sm ${isMenuOpen ? "" : "hidden"}`}>
                 <ul className=''>
                     {navItems.map(({ path, title }) => (
                         <li key={path} className='text-base text-white first:text-white py-1'>
@@ -91,12 +111,22 @@ const Navbar = () => {
                             </NavLink>
                         </li>
                     ))}
-                    <li className='text-white py-1'>
-                        <Link to="/login">Log In</Link>
-                    </li>
+                    {
+                        user ? (
+                            <>
+                                <li className='text-blue'>Hi, {user.email}</li>
+                                <Link to="/profile" className="text-white">Profile</Link>
+                            </>
+                        ) : (
+                            <>
+                                <Link to="/login" className="">Log In</Link>
+                                <Link to="/signup" className="text-white">Sign up</Link>
+                            </>
+                        )
+                    }
                 </ul>
-            </div>
-        </header>
+            </ div >
+        </header >
     )
 }
 
