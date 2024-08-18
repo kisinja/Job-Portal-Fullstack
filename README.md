@@ -23,6 +23,9 @@ A full-featured job posting website where employers can post job listings, and j
 ### Job Listings
 ![Homepage](./job-portal-client/src/assets/Search.png)
 
+### Post Job
+![PostJob](./job-portal-client/src/assets/post-job.png)
+
 ### SignUp 
 ![SignUp](./job-portal-client/src/assets/SIgnup.png)
 
