@@ -10,7 +10,7 @@ const PostJob = () => {
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const BASE_URL = 'http://localhost:7777/api/jobs';
+    const BASE_URL = 'https://techposter-backend.onrender.com/api/jobs';
 
     const { user } = useAuthContext();
 
