@@ -1,10 +1,20 @@
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import CreatableSelect from 'react-select/creatable';
+import { useNavigate } from 'react-router-dom';
+import { useAuthContext } from '../hooks/useAuthContext';
 
 const PostJob = () => {
 
     const [selectedOptions, setSelectedOptions] = useState([]);
+    const [message, setMessage] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    const BASE_URL = 'http://localhost:7777/api/jobs';
+
+    const { user } = useAuthContext();
+
+    const navigate = useNavigate();
 
     const {
         register,
@@ -13,9 +23,33 @@ const PostJob = () => {
         setValue
     } = useForm();
 
-    const onSubmit = (data) => {
+    const onSubmit = async (data) => {
+        setLoading(true);
         data.skills = selectedOptions;
         console.log(data);
+
+        const res = await fetch(BASE_URL, {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json',
+                'Authorization': `Bearer ${user.token}`
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (res.ok) {
+            setLoading(false);
+            const data = await res.json();
+            console.log(data);
+            setMessage(data.message);
+            navigate('/');
+        }
+
+        if (!res.ok) {
+            setLoading(false);
+            const data = await res.json();
+            console.log(data.error);
+        }
     };
 
     // Manually register the field
@@ -198,8 +232,13 @@ const PostJob = () => {
                         />
                     </div>
 
+                    {/* message */}
+                    {message && <div className='text-center text-green-500 font-semibold'>
+                        {message}
+                    </div>}
+
                     {/* submit input */}
-                    <input type="submit" className='block mt-12 bg-blue text-white font-semibold px-8 py-2 rounded-sm cursor-pointer' />
+                    <input type="submit" className='block mt-12 bg-blue text-white font-semibold px-8 py-2 rounded-sm cursor-pointer' value={loading ? "Loading..." : "Post Job"} />
                 </form>
             </div>
         </div>

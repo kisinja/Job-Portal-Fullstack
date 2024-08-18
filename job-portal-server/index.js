@@ -40,6 +40,8 @@ startServer();
 // Routes
 const uploadPic = require("./routes/uploadPic");
 const authRoutes = require("./routes/auth");
+const jobRoutes = require("./routes/jobs");
 
 app.use("/api", uploadPic);
 app.use("/api/auth", authRoutes);
+app.use("/api/jobs", jobRoutes);

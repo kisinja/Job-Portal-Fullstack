@@ -27,7 +27,7 @@ const userSchema = new mongoose.Schema({
     },
     profilePic: {
         type: String,
-        default: "https://via.placeholder.com/350x150"
+        default: "https://i.pinimg.com/736x/fb/8f/3e/fb8f3e83f9146e6b6a805a535f665dd7.jpg"
     }
 }, { timestamps: true });
 

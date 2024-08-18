@@ -71,12 +71,14 @@ const Navbar = () => {
                 <div className="text-base font-medium space-x-5 hidden lg:block">
                     {
                         user ? (
-                            <div className='flex items-center gap-4'>
-                                <Link to="/profile" className="py-2 px-5 border rounded flex gap-2 items-center">
+                            <div className='flex items-center gap-3'>
+                                <Link to="/profile" className="py-2 px-5 border rounded">
                                     Hi, {user.username}
-                                    <img src={user.profilePic} alt={`${user.username}'s dp`} className='w-8 h-8 rounded-full object-cover' />
                                 </Link>
                                 <Link to="" className="py-2 px-5 border rounded bg-red-600 text-white" onClick={handleClick}>Log out</Link>
+                                {/* <div>
+                                    <img src={user.profilePic} alt={`${user.username}'s dp`} className='w-12 h-12 rounded-full object-cover' />
+                                </div> */}
                             </div>
                         ) : (
                             <>

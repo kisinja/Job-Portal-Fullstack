@@ -4,6 +4,7 @@ import Banner from '../components/Banner';
 import Jobs from './Jobs';
 import Sidebar from '../sidebar/Sidebar';
 import NewsLetter from '../components/NewsLetter';
+import { useAuthContext } from '../hooks/useAuthContext';
 
 const Home = () => {
     const [selectedCategory, setSelectedCategory] = useState(null);
@@ -12,13 +13,31 @@ const Home = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 6;
 
+    const BASE_URL = 'http://localhost:7777/api/jobs';
+
+    const { user } = useAuthContext();
+
     useEffect(() => {
         setLoading(true);
-        fetch("jobs.json").then(res => res.json()).then(data => {
-            /* console.log(data); */
-            setJobs(data);
-            setLoading(false);
-        });
+
+        const fetchJobs = async () => {
+            try {
+                const response = await fetch(BASE_URL, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${user.token}`,
+                    },
+                });
+                const data = await response.json();
+                setJobs(data);
+                console.log(jobs);
+                setLoading(false);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        fetchJobs();
     }, []);
 
     const [query, setQuery] = useState("");
@@ -75,11 +94,12 @@ const Home = () => {
         // category based filtering
         if (selected) {
             filteredJobs = filteredJobs.filter(({ jobLocation, maxPrice, salaryType, employmentType, postingDate, experienceLevel }) => (
-                jobLocation.toLowerCase() === selected.toLowerCase() ||
-                parseInt(maxPrice) <= parseInt(selected) ||
-                postingDate >= selected ||
-                salaryType.toLowerCase() === selected.toLowerCase() ||
-                employmentType.toLowerCase() === selected.toLowerCase() || experienceLevel.toLowerCase() === selected.toLowerCase()
+                (jobLocation && jobLocation.toLowerCase() === selected.toLowerCase()) ||
+                (maxPrice && parseInt(maxPrice) <= parseInt(selected)) ||
+                (postingDate && postingDate >= selected) ||
+                (salaryType && salaryType.toLowerCase() === selected.toLowerCase()) ||
+                (employmentType && employmentType.toLowerCase() === selected.toLowerCase()) ||
+                (experienceLevel && experienceLevel.toLowerCase() === selected.toLowerCase())
             ));
             console.log(filteredJobs);
         }
