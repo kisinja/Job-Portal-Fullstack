@@ -37,6 +37,10 @@ const startServer = async () => {
 
 startServer();
 
+app.get("/", (req, res) => {
+    res.send("Welcome to Job Portal API");
+});
+
 // Routes
 const uploadPic = require("./routes/uploadPic");
 const authRoutes = require("./routes/auth");

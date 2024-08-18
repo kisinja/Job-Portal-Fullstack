@@ -21,7 +21,7 @@ const postJob = async (req, res) => {
 // get all jobs
 const getJobs = async (req, res) => {
     try {
-        const jobs = await Job.find();
+        const jobs = await Job.find().sort({ createdAt: -1 });
         if (!jobs) {
             res.status(400).json({ error: "No jobs found" });
         }

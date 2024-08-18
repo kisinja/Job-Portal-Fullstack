@@ -14,8 +14,8 @@ const Card = ({ data }) => {
     return (
         <section className="card">
             <Link to={"/"} className="flex gap-4 flex-col sm:flex-row items-start">
-                <div className="w-[250px] h-[100px] p-2 shadow">
-                    <img src={companyLogo} alt="" className="w-full h-full object-cover" />
+                <div className="w-[250px] h-[150px] p-2 shadow">
+                    <img src={companyLogo} alt="" className="w-full h-full object-contain" />
                 </div>
                 <div className="">
                     <h4 className="text-primary mb-1">{companyName}</h4>
