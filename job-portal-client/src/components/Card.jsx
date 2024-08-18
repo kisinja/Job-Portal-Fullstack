@@ -5,11 +5,6 @@ const Card = ({ data }) => {
 
     const { companyName, companyLogo, minPrice, maxPrice, salaryType, jobLocation, employmentType, createdAt, description, jobTitle } = data;
 
-    const changeTime = (date) => {
-        const now = new Date(date);
-
-        return now.toISOString().split('T')[0];
-    };
 
     return (
         <section className="card">
@@ -33,7 +28,7 @@ const Card = ({ data }) => {
                         </span>
                         <span className="flex items-center gap-2">
                             <FiCalendar />
-                            {changeTime(createdAt)}
+                            {createdAt}
                         </span>
                     </div>
 
