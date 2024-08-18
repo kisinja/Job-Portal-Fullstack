@@ -93,10 +93,10 @@ const Home = () => {
 
         // category based filtering
         if (selected) {
-            filteredJobs = filteredJobs.filter(({ jobLocation, maxPrice, salaryType, employmentType, postingDate, experienceLevel }) => (
+            filteredJobs = filteredJobs.filter(({ jobLocation, maxPrice, salaryType, employmentType, createdAt, experienceLevel }) => (
                 (jobLocation && jobLocation.toLowerCase() === selected.toLowerCase()) ||
                 (maxPrice && parseInt(maxPrice) <= parseInt(selected)) ||
-                (postingDate && postingDate >= selected) ||
+                (createdAt && createdAt >= selected) ||
                 (salaryType && salaryType.toLowerCase() === selected.toLowerCase()) ||
                 (employmentType && employmentType.toLowerCase() === selected.toLowerCase()) ||
                 (experienceLevel && experienceLevel.toLowerCase() === selected.toLowerCase())
