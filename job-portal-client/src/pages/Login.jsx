@@ -16,7 +16,7 @@ const Login = () => {
 
         await login(email, password);
 
-        setFlashMessage(error || 'Login successful');
+        setFlashMessage(error);
     };
 
     const clearMessage = () => {

@@ -15,7 +15,7 @@ const Home = () => {
     useEffect(() => {
         setLoading(true);
         fetch("jobs.json").then(res => res.json()).then(data => {
-            console.log(data);
+            /* console.log(data); */
             setJobs(data);
             setLoading(false);
         });
