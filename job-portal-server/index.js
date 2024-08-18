@@ -7,7 +7,7 @@ const bodyParser = require("body-parser");
 const app = express();
 
 app.use(cors({
-    origin: ["http://localhost:5173", "http://localhost:3000"],
+    origin: ["http://localhost:5173", "http://localhost:3000",'https://techposter-frontend.onrender.com'],
 },
     {
         methods: ["GET", "POST", "PUT", "DELETE"],
