@@ -71,10 +71,13 @@ const Navbar = () => {
                 <div className="text-base font-medium space-x-5 hidden lg:block">
                     {
                         user ? (
-                            <>
-                                <Link to="/profile" className="py-2 px-5 border rounded">Profile</Link>
+                            <div className='flex items-center gap-4'>
+                                <Link to="/profile" className="py-2 px-5 border rounded flex gap-2 items-center">
+                                    Hi, {user.username}
+                                    <img src={user.profilePic} alt={`${user.username}'s dp`} className='w-8 h-8 rounded-full object-cover' />
+                                </Link>
                                 <Link to="" className="py-2 px-5 border rounded bg-red-600 text-white" onClick={handleClick}>Log out</Link>
-                            </>
+                            </div>
                         ) : (
                             <>
                                 <Link to="/login" className="py-2 px-5 border rounded">Log In</Link>
@@ -115,7 +118,7 @@ const Navbar = () => {
                     {
                         user ? (
                             <>
-                                <li className='text-gray-500'>Hi, {user.email}</li>
+                                <li className='text-gray-500'>Hi, {user.username}</li>
                                 <li>
                                     <Link to="/profile" className="text-white">Profile</Link>
                                 </li>

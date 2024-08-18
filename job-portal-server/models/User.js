@@ -18,8 +18,8 @@ const userSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ['user', 'admin'],
-        default: 'user'
+        enum: ['job-seeker', 'admin', 'employer'],
+        default: 'job-seeker'
     },
     bio: {
         type: String,
@@ -27,12 +27,12 @@ const userSchema = new mongoose.Schema({
     },
     profilePic: {
         type: String,
-        default: null
+        default: "https://via.placeholder.com/350x150"
     }
 }, { timestamps: true });
 
 // Static sign up method
-userSchema.statics.signUp = async function (username, email, password, profilePic) {
+userSchema.statics.signUp = async function (username, email, password) {
 
     let emptyFields = [];
 
@@ -74,7 +74,7 @@ userSchema.statics.signUp = async function (username, email, password, profilePi
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-    const user = await this.create({ username, email, password: hashedPassword, profilePic: profilePic ? profilePic.filename : null });
+    const user = await this.create({ username, email, password: hashedPassword });
     if (!user) {
         throw new Error('Error creating user');
     }

@@ -20,8 +20,13 @@ const loginUser = async (req, res) => {
         // create token
         const token = createToken(user._id);
 
+        const { username, profilePic, role } = user;
+
         res.status(200).json({
+            username,
+            profilePic,
             email,
+            role,
             token,
         });
     } catch (error) {
@@ -35,13 +40,17 @@ const registerUser = async (req, res) => {
     const { username, email, password } = req.body;
     try {
         // check if user exists using the signUp method from the User model
-        const user = await User.signUp(username, email, password, req.file || '');
+        const user = await User.signUp(username, email, password);
 
         // create token
         const token = createToken(user._id);
 
+        const { profilePic, role } = user;
         res.status(201).json({
+            username,
             email,
+            profilePic,
+            role,
             token
         });
 
