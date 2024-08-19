@@ -7,7 +7,7 @@ const bodyParser = require("body-parser");
 const app = express();
 
 app.use(cors({
-    origin: ["http://localhost:5173", "http://localhost:3000",'https://techposter-frontend.onrender.com'],
+    origin: ["http://localhost:5173", "http://localhost:3000", 'https://techposter-frontend.onrender.com'],
 },
     {
         methods: ["GET", "POST", "PUT", "DELETE"],
@@ -45,7 +45,9 @@ app.get("/", (req, res) => {
 const uploadPic = require("./routes/uploadPic");
 const authRoutes = require("./routes/auth");
 const jobRoutes = require("./routes/jobs");
+const userRoutes = require("./routes/user");
 
 app.use("/api", uploadPic);
 app.use("/api/auth", authRoutes);
 app.use("/api/jobs", jobRoutes);
+app.use("/api/profile", userRoutes);

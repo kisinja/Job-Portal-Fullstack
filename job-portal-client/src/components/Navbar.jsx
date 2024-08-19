@@ -68,11 +68,11 @@ const Navbar = () => {
                     {
                         user ? (
                             <div className='flex items-center gap-3'>
-                                <Link to="/profile" className="py-2 px-5 border rounded">
-                                    Hi, {user.username}
-                                </Link>
                                 <Link to={`/my-jobs/${user._id}`}>
                                     My Jobs
+                                </Link>
+                                <Link to={`/profile/${user._id}`} className="py-2 px-5 border rounded">
+                                    Hi, {user.username}
                                 </Link>
                                 <Link to="" className="py-2 px-5 border rounded bg-red-600 text-white" onClick={handleClick}>Log out</Link>
                                 {/* <div>
@@ -119,14 +119,14 @@ const Navbar = () => {
                     {
                         user ? (
                             <>
-                                <li className='text-gray-500'>Hi, {user.username}</li>
                                 <li>
                                     <Link to={`/my-jobs/${user._id}`} className='text-white'>
                                         My Jobs
                                     </Link>
                                 </li>
+                                <li className='text-gray-500'>Hi, {user.username}</li>
                                 <li>
-                                    <Link to="/profile" className="text-white">Profile</Link>
+                                    <Link to={`/profile/${user._id}`} className="text-white">Profile</Link>
                                 </li>
                                 <li>
                                     <Link to="" className=" text-white" onClick={handleClick}>Log out</Link>

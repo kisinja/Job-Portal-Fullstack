@@ -32,6 +32,12 @@ A full-featured job posting website where employers can post job listings, and j
 ### Login 
 ![Login](./job-portal-client/src/assets/Homepage.png)
 
+## My Jobs
+![MyJobs](./job-portal-client/src/assets/myJobs.png)
+
+## Profile
+![Profile](./job-portal-client/src/assets/profile.png)
+
 ## Installation
 
 1. Clone the repository:
