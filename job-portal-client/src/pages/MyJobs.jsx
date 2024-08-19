@@ -55,6 +55,12 @@ const MyJobs = () => {
                     </button>
                 </div>
             </div>
+
+            <div className="jobs-list">
+                <h1 className="font-bold">
+                    {jobs.length} job{jobs.length === 1 ? "" : "s"} found
+                </h1>
+            </div>
         </div>
     )
 }
