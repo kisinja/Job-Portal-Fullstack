@@ -7,9 +7,9 @@ export const useLogin = () => {
 
     const { dispatch } = useAuthContext();
 
-    /* const BASE_URL = 'https://techposter-backend.onrender.com/api/auth/login'; */
+    const BASE_URL = 'https://techposter-backend.onrender.com/api/auth/login';
 
-    const BASE_URL = 'http://localhost:7777/api/auth/login';
+    /* const BASE_URL = 'http://localhost:7777/api/auth/login'; */
 
     const login = async (email, password) => {
         setLoading(true);

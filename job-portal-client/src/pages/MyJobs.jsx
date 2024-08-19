@@ -12,7 +12,9 @@ const MyJobs = () => {
     const [searchText, setSearchText] = useState('');
     const [isLoading, setIsLoading] = useState(true);
 
-    const BASE_URL = `http://localhost:7777/api/jobs/myJobs/${userId}`;
+    /* const BASE_URL = `http://localhost:7777/api/jobs/myJobs/${userId}`; */
+
+    const BASE_URL = `https://techposter-backend.onrender.com/api/jobs/${userId}`;
 
     useEffect(() => {
         setIsLoading(true);
