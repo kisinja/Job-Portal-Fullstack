@@ -10,7 +10,9 @@ const PostJob = () => {
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const BASE_URL = 'https://techposter-backend.onrender.com/api/jobs';
+    /* const BASE_URL = 'https://techposter-backend.onrender.com/api/jobs'; */
+
+    const BASE_URL = 'http://localhost:7777/api/jobs';
 
     const { user } = useAuthContext();
 
@@ -34,7 +36,7 @@ const PostJob = () => {
                 'Content-type': 'application/json',
                 'Authorization': `Bearer ${user.token}`
             },
-            body: JSON.stringify(data)
+            body: JSON.stringify({ ...data, postedBy: user._id })
         });
 
         if (res.ok) {
@@ -221,7 +223,7 @@ const PostJob = () => {
                     </div>
 
                     {/* last row */}
-                    <div className='w-full'>
+                    {/* <div className='w-full'>
                         <label className="block text-lg mb-2">Job Posted By</label>
 
                         <input
@@ -230,7 +232,7 @@ const PostJob = () => {
                             {...register('postedBy')}
                             className='create-job-input'
                         />
-                    </div>
+                    </div> */}
 
                     {/* message */}
                     {message && <div className='text-center text-green-500 font-semibold'>

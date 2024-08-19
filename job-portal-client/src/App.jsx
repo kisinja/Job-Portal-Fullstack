@@ -24,7 +24,7 @@ const App = () => {
         <Routes>
           <Route path="/" exact element={user ? <Home /> : <Navigate to="/login" />} />
           <Route path="/about" element={user ? <About /> : <Navigate to="/login" />} />
-          <Route path="/my-jobs" element={user ? <MyJobs /> : <Navigate to="/login" />} />
+          <Route path="/my-jobs/:userId" element={user ? <MyJobs /> : <Navigate to="/login" />} />
           <Route path="/salary" element={user ? <Salary /> : <Navigate to="/login" />} />
           <Route path="/post-job" element={user ? <PostJob /> : <Navigate to="/login" />} />
           <Route path="/profile" element={user ? <Profile /> : <Navigate to="/login" />} />

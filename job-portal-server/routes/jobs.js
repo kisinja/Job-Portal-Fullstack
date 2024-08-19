@@ -1,5 +1,5 @@
 const express = require('express');
-const { getJobs, postJob, getJobById } = require('../controllers/job');
+const { getJobs, postJob, getJobById, getJobByUserId } = require('../controllers/job');
 
 const router = express.Router();
 
@@ -7,16 +7,18 @@ const router = express.Router();
 const requireAuth = require('../middleware/requireAuth');
 
 // use middleware
-router.use(requireAuth);
+/* router.use(requireAuth); */
 
 // get all jobs
-router.get('/', getJobs);
+router.get('/', requireAuth, getJobs);
 
 // post a new job
-router.post('/', postJob);
+router.post('/', requireAuth, postJob);
 
 // get a job by id
-router.get('/:id', getJobById);
+router.get('/:id', requireAuth, getJobById);
 
+// get job by user id
+router.get('/myJobs/:userId', requireAuth, getJobByUserId);
 
 module.exports = router;

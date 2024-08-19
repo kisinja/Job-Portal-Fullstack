@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 
 // create token
 const createToken = (_id) => {
-    const token = jwt.sign({ _id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ _id: _id }, process.env.JWT_SECRET, {
         expiresIn: '3d'
     });
 
@@ -20,9 +20,10 @@ const loginUser = async (req, res) => {
         // create token
         const token = createToken(user._id);
 
-        const { username, profilePic, role } = user;
+        const { _id, username, profilePic, role } = user;
 
         res.status(200).json({
+            _id,
             username,
             profilePic,
             email,
@@ -45,8 +46,9 @@ const registerUser = async (req, res) => {
         // create token
         const token = createToken(user._id);
 
-        const { profilePic, role } = user;
+        const { profilePic, role, _id } = user;
         res.status(201).json({
+            _id,
             username,
             email,
             profilePic,

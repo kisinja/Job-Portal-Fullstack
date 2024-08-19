@@ -1,4 +1,5 @@
 const Job = require('../models/Job');
+const mongoose = require('mongoose');
 
 // post a new job
 const postJob = async (req, res) => {
@@ -20,6 +21,9 @@ const postJob = async (req, res) => {
 
 // get all jobs
 const getJobs = async (req, res) => {
+
+    console.log(req.user);
+
     try {
         const jobs = await Job.find().sort({ createdAt: -1 });
         if (!jobs) {
@@ -48,8 +52,28 @@ const getJobById = async (req, res) => {
     }
 };
 
+// get job by user id
+const getJobByUserId = async (req, res) => {
+
+    const {userId} = req.params;
+
+    try {
+        const jobs = await Job.find({ postedBy: userId });
+        if (!jobs) {
+            res.status(400).json({ error: "No jobs found" });
+        }
+
+        res.status(200).json(jobs);
+
+    } catch (error) {
+        console.log(error.message);
+        res.json({ error: error.message }).status(500);
+    }
+};
+
 module.exports = {
     postJob,
     getJobs,
-    getJobById
+    getJobById,
+    getJobByUserId
 };

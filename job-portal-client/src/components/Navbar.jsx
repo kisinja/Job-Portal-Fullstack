@@ -19,10 +19,6 @@ const Navbar = () => {
             path: '/'
         },
         {
-            title: 'My Jobs',
-            path: '/my-jobs'
-        },
-        {
             title: 'Salary Estimate',
             path: '/salary'
         },
@@ -75,6 +71,9 @@ const Navbar = () => {
                                 <Link to="/profile" className="py-2 px-5 border rounded">
                                     Hi, {user.username}
                                 </Link>
+                                <Link to={`/my-jobs/${user._id}`}>
+                                    My Jobs
+                                </Link>
                                 <Link to="" className="py-2 px-5 border rounded bg-red-600 text-white" onClick={handleClick}>Log out</Link>
                                 {/* <div>
                                     <img src={user.profilePic} alt={`${user.username}'s dp`} className='w-12 h-12 rounded-full object-cover' />
@@ -121,6 +120,11 @@ const Navbar = () => {
                         user ? (
                             <>
                                 <li className='text-gray-500'>Hi, {user.username}</li>
+                                <li>
+                                    <Link to={`/my-jobs/${user._id}`} className='text-white'>
+                                        My Jobs
+                                    </Link>
+                                </li>
                                 <li>
                                     <Link to="/profile" className="text-white">Profile</Link>
                                 </li>
