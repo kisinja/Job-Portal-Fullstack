@@ -12,6 +12,8 @@ import SignUp from "./pages/SignUp";
 import './App.css';
 import { useAuthContext } from "./hooks/useAuthContext";
 import Profile from "./pages/Profile";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 const App = () => {
 
@@ -30,6 +32,8 @@ const App = () => {
           <Route path="/profile/:userId" element={user ? <Profile /> : <Navigate to="/login" />} />
           <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
           <Route path="/signup" element={!user ? <SignUp /> : <Navigate to="/" />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
         </Routes>
       </div>
       <Footer />

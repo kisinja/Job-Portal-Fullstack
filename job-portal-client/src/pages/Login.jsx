@@ -51,13 +51,17 @@ const Login = () => {
                         id="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="border-2 rounded-md p-1 outline-none w-full"
+                        className="border-2 rounded-md p-1 focus:outline-none w-full"
                     />
                 </div>
 
                 <p className="text-sm text-primary">Don{"'"}t have an account ?
                     <a href="/signup" className="text-blue">Sign Up</a>
                 </p>
+
+                <a className="text-sm text-blue block" href="/forgot-password">
+                    Forgot your password ?
+                </a>
 
                 {error && <div className="error">{error}</div>}
 

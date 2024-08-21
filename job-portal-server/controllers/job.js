@@ -4,7 +4,10 @@ const mongoose = require('mongoose');
 // post a new job
 const postJob = async (req, res) => {
     try {
-        const job = await Job.create(req.body);
+        const job = await Job.create({
+            ...req.body,
+            postedBy: req.user._id
+        });
         if (!job) {
             res.status(400).json({ error: "Error posting job" });
         }
@@ -25,7 +28,7 @@ const getJobs = async (req, res) => {
     console.log(req.user);
 
     try {
-        const jobs = await Job.find().sort({ createdAt: -1 });
+        const jobs = await Job.find().sort({ createdAt: -1 }).populate('postedBy', 'email');
         if (!jobs) {
             res.status(400).json({ error: "No jobs found" });
         }

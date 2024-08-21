@@ -67,7 +67,7 @@ const Salary = () => {
             <h1 className="text-2xl font-light mb-4">Salary Estimate Calculator</h1>
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                    <label className="block text-sm font-medium">Job Title</label>
+                    <label className="block text-lg mb-2 font-medium">Job Title</label>
                     <input
                         type="text"
                         value={jobTitle}
@@ -77,7 +77,7 @@ const Salary = () => {
                     />
                 </div>
                 <div>
-                    <label className="block text-sm font-medium">Location</label>
+                    <label className="block text-lg mb-2 font-medium">Location</label>
                     <input
                         type="text"
                         value={location}
@@ -87,7 +87,7 @@ const Salary = () => {
                     />
                 </div>
                 <div>
-                    <label className="block text-sm font-medium">Experience Level</label>
+                    <label className="block text-lg mb-2 font-medium">Experience Level</label>
                     <select
                         value={experience}
                         onChange={(e) => setExperience(e.target.value)}
@@ -101,7 +101,7 @@ const Salary = () => {
                     </select>
                 </div>
                 <div>
-                    <label className="block text-sm font-medium">Industry</label>
+                    <label className="block text-lg mb-2 font-medium">Industry</label>
                     <input
                         type="text"
                         value={industry}
@@ -110,16 +110,13 @@ const Salary = () => {
                         required
                     />
                 </div>
-                {isLoading ? (
-                    <Loader />
-                ) : (
-                    <button
-                        type="submit"
-                        className="w-full py-2 px-4 bg-blue text-white rounded"
-                    >
-                        Calculate Salary
-                    </button>
-                )}
+
+                <button
+                    type="submit"
+                    className="w-full py-2 px-4 bg-blue text-white rounded font-semibold"
+                >
+                    {isLoading ? 'Calculating...' : 'Calculate Salary'}
+                </button>
             </form>
 
             <div className="mt-5 text-center">

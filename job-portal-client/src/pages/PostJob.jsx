@@ -36,7 +36,7 @@ const PostJob = () => {
                 'Content-type': 'application/json',
                 'Authorization': `Bearer ${user.token}`
             },
-            body: JSON.stringify({ ...data, postedBy: user._id })
+            body: JSON.stringify(data)
         });
 
         if (res.ok) {
