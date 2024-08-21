@@ -5,7 +5,8 @@ import { useAuthContext } from '../hooks/useAuthContext';
 const Profile = () => {
     const { user, dispatch } = useAuthContext();
     const { userId } = useParams();
-    const BASE_URL = `http://localhost:7777/api/profile/`;
+    /* const BASE_URL = `http://localhost:7777/api/profile/`; */
+    const BASE_URL = 'https://techposter-backend.onrender.com/api/profile';
 
     const [userProfile, setUserProfile] = useState({
         username: '',

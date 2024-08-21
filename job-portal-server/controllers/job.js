@@ -55,7 +55,7 @@ const getJobById = async (req, res) => {
 // get job by user id
 const getJobByUserId = async (req, res) => {
 
-    const {userId} = req.params;
+    const { userId } = req.params;
 
     try {
         const jobs = await Job.find({ postedBy: userId });
@@ -71,9 +71,25 @@ const getJobByUserId = async (req, res) => {
     }
 };
 
+// delete job by id
+const deleteJob = async (req, res) => {
+    try {
+        const job = await Job.findByIdAndDelete(req.params.id);
+        if (!job) {
+            res.status(400).json({ error: "No job found" });
+        }
+
+        res.status(200).json({ message: "Job deleted successfully" });
+    } catch (error) {
+        console.log(error.message);
+        res.json({ error: error.message }).status(500);
+    }
+};
+
 module.exports = {
     postJob,
     getJobs,
     getJobById,
-    getJobByUserId
+    getJobByUserId,
+    deleteJob
 };

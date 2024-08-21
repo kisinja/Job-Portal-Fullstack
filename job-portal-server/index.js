@@ -46,8 +46,10 @@ const uploadPic = require("./routes/uploadPic");
 const authRoutes = require("./routes/auth");
 const jobRoutes = require("./routes/jobs");
 const userRoutes = require("./routes/user");
+const salaryRoutes = require("./routes/salary");
 
 app.use("/api", uploadPic);
 app.use("/api/auth", authRoutes);
 app.use("/api/jobs", jobRoutes);
 app.use("/api/profile", userRoutes);
+app.use("/api/salary", salaryRoutes);

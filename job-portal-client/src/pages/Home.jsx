@@ -5,6 +5,7 @@ import Jobs from './Jobs';
 import Sidebar from '../sidebar/Sidebar';
 import NewsLetter from '../components/NewsLetter';
 import { useAuthContext } from '../hooks/useAuthContext';
+import Loader from '../components/Loader';
 
 const Home = () => {
     const [selectedCategory, setSelectedCategory] = useState(null);
@@ -137,7 +138,7 @@ const Home = () => {
 
                     {
                         loading ? (
-                            <p className='font-medium'>Loading...</p>
+                            <Loader />
                         ) : result.length > 0 ? (<Jobs result={result} />) : <>
                             <h3 className='text-lg font-bold mb-2'>{result.length} Jobs</h3>
                             <p>No jobs found</p>

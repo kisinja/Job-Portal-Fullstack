@@ -7,7 +7,7 @@ const Navbar = () => {
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-    const { user } = useAuthContext();
+    const { user, dispatch } = useAuthContext();
 
     const handleMenuToggler = () => {
         setIsMenuOpen(!isMenuOpen);

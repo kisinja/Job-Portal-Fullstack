@@ -23,6 +23,7 @@ header {
     z-index: 1000;
     background: #fff;
 }
+
 /* 
 body {
     font-family: 'Roboto', sans-serif;
@@ -141,7 +142,7 @@ li {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    background-attachment: fixed;
+    background-attachment: scroll;
 
     display: flex;
     justify-content: center;
@@ -156,7 +157,7 @@ li {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    background-attachment: fixed;
+    background-attachment: scroll;
 
     display: flex;
     justify-content: center;

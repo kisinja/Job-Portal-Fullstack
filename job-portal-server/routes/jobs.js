@@ -1,5 +1,5 @@
 const express = require('express');
-const { getJobs, postJob, getJobById, getJobByUserId } = require('../controllers/job');
+const { getJobs, postJob, getJobById, getJobByUserId, deleteJob } = require('../controllers/job');
 
 const router = express.Router();
 
@@ -20,5 +20,8 @@ router.get('/:id', requireAuth, getJobById);
 
 // get job by user id
 router.get('/myJobs/:userId', requireAuth, getJobByUserId);
+
+// delete a job
+router.delete('/:id', requireAuth, deleteJob);
 
 module.exports = router;
