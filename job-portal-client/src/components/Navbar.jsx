@@ -2,12 +2,13 @@ import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { FaBarsStaggered as FaBar, FaXmark } from 'react-icons/fa6';
 import { useAuthContext } from '../hooks/useAuthContext';
+import { IoLogOutOutline } from "react-icons/io5";
 
 const Navbar = () => {
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-    const { user, dispatch } = useAuthContext();
+    const { user } = useAuthContext();
 
     const handleMenuToggler = () => {
         setIsMenuOpen(!isMenuOpen);
@@ -71,13 +72,12 @@ const Navbar = () => {
                                 <Link to={`/my-jobs/${user._id}`}>
                                     My Jobs
                                 </Link>
-                                <Link to={`/profile/${user._id}`} className="py-2 px-5 border rounded">
-                                    Hi, {user.username}
+                                <Link to={`/profile/${user._id}`} className="py-2 px-5 text-base text-primary">
+                                    Profile ({user.username})
                                 </Link>
-                                <Link to="" className="py-2 px-5 border rounded bg-red-600 text-white" onClick={handleClick}>Log out</Link>
-                                {/* <div>
-                                    <img src={user.profilePic} alt={`${user.username}'s dp`} className='w-12 h-12 rounded-full object-cover' />
-                                </div> */}
+                                <Link to="" className="py-2 px-5 text-red-600 text-base" onClick={handleClick}>
+                                    <IoLogOutOutline className='text-2xl' title='Sign out' />
+                                </Link>
                             </div>
                         ) : (
                             <>

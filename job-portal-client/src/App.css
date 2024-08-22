@@ -164,6 +164,17 @@ li {
     align-items: center;
 }
 
+#hero {
+    width: 100%;
+    height: 70vh;
+
+    background: linear-gradient(rgba(0, 0, 0, .5), rgba(0, 0, 0, .5)), url(assets/herobg.jpeg);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+}
+
 #signup-page form {
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);

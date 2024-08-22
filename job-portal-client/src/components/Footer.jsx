@@ -13,7 +13,9 @@ const Footer = () => {
                         <ul className="flex flex-col gap-2">
                             <li className="text-sm hover:text-blue cursor-pointer">Careers</li>
                             <li className="text-sm hover:text-blue cursor-pointer">Customer Care</li>
-                            <li className="text-sm hover:text-blue cursor-pointer">Privacy Policy</li>
+                            <li className="text-sm hover:text-blue cursor-pointer">
+                                <a href="/privacy-policy">Privacy Policy</a>
+                            </li>
                         </ul>
                     </div>
 
