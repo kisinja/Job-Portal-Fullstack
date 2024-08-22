@@ -212,7 +212,7 @@ const Profile = () => {
                                 <label className="text-lg font-semibold text-gray-800">Skills:</label>
                                 <div className='flex flex-wrap gap-2'>
                                     {userProfile.userSkills.map((skill, index) => (
-                                        <span key={index} className='bg-white p-1 rounded border'>
+                                        <span key={index} className='bg-white p-1 rounded border border-blue'>
                                             {skill}
                                         </span>
                                     ))}
