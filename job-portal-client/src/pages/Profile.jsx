@@ -13,8 +13,10 @@ const Profile = () => {
         email: '',
         bio: '',
         role: '',
-        profilePic: ''
+        profilePic: '',
+        newSkills: [],  // Ensure this is always an array
     });
+    const [newSkill, setNewSkill] = useState([]);  // New state for adding skills
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(true);
@@ -71,6 +73,8 @@ const Profile = () => {
         formData.append('email', userProfile.email);
         formData.append('bio', userProfile.bio);
         formData.append('role', userProfile.role);
+        formData.append('newSkills', JSON.stringify(userProfile.newSkills));  // Add skills to form data
+
         if (userProfile.profilePic instanceof File) {
             formData.append('profilePic', userProfile.profilePic);
         }
@@ -89,7 +93,6 @@ const Profile = () => {
             if (res.ok) {
                 console.log(data);
                 setUserProfile(data.user);
-                setIsEditing(false);  // Turn off editing mode
 
                 const updatedUser = { ...user, ...data.user };
                 localStorage.setItem('user', JSON.stringify(updatedUser));
@@ -104,6 +107,16 @@ const Profile = () => {
         }
     };
 
+    const handleAddSkill = () => {
+        if (newSkill.trim() !== "") {
+            setUserProfile((prevProfile) => ({
+                ...prevProfile,
+                newSkills: [...(prevProfile.newSkills || []), newSkill],  // Ensure newSkills is an array
+            }));
+            setNewSkill("");
+        }
+    };
+
     return (
         <div className='max-w-screen-2xl container xl:px-24 p-4 py-4'>
 
@@ -114,7 +127,7 @@ const Profile = () => {
                     <div className="flex flex-col items-center justify-center mt-4">
                         <img
                             className="w-32 h-32 rounded-full border-4 border-blue object-cover"
-                            src={userProfile.profilePic}
+                            src={`https://techposter-backend.onrender.com/uploads/${userProfile.profilePic}`}
                             alt="Profile"
                         />
                         {isEditing && (
@@ -182,6 +195,35 @@ const Profile = () => {
                                 <span className='ml-2 text-primary/70'>{userProfile.bio}</span>
                             )}
                         </div>
+
+                        {/* New Skill Input Section */}
+                        {isEditing && (
+                            <div>
+                                <label className="text-lg font-semibold text-gray-800">Add Skill:</label>
+                                <div className="flex items-center">
+                                    <input
+                                        type="text"
+                                        name="newSkill"
+                                        value={newSkill}
+                                        onChange={(e) => setNewSkill(e.target.value)}
+                                        className="w-full mt-1 p-2 border border-gray-300 rounded-md"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={handleAddSkill}
+                                        className="ml-2 bg-blue text-white p-2 rounded-md"
+                                    >
+                                        Add
+                                    </button>
+                                </div>
+                                <ul className="mt-2">
+                                    {userProfile.newSkills && userProfile.newSkills.map((skill, index) => (
+                                        <li key={index} className="text-primary/70">{skill}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+
                         {isEditing ? (
                             <button type="submit" className="mt-4 bg-blue text-white p-2 rounded-md">
                                 Save Changes

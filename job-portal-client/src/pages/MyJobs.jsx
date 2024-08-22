@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAuthContext } from "../hooks/useAuthContext";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { CiEdit } from "react-icons/ci";
 import { MdDelete } from "react-icons/md";
 import { FiSearch } from "react-icons/fi";
@@ -174,7 +174,9 @@ const MyJobs = () => {
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 flex items-center gap-2">
                                             <button className="font-semibold py-2 px-4 rounded-sm shadow-sm">
-                                                <CiEdit className="text-lg text-blue" />
+                                                <Link to={`/edit-job/${job._id}`}>
+                                                    <CiEdit className="text-lg text-blue" />
+                                                </Link>
                                             </button>
                                             <button className="py-2 px-4 rounded-sm shadow-sm" onClick={() => handleDelete(job._id)}>
                                                 <MdDelete className="text-lg text-red-500" />

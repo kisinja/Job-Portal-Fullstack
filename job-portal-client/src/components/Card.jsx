@@ -1,9 +1,14 @@
 import { FiCalendar, FiClock, FiDollarSign, FiMapPin } from "react-icons/fi";
 import { Link } from "react-router-dom";
+import { HiOutlineClipboardList } from "react-icons/hi";
 
 const Card = ({ data }) => {
 
-    const { companyName, companyLogo, minPrice, maxPrice, salaryType, jobLocation, employmentType, createdAt, description, jobTitle } = data;
+    const { companyName, companyLogo, minPrice, maxPrice, salaryType, jobLocation, employmentType, createdAt, description, jobTitle, skills } = data;
+
+    const formatDate = (date) => {
+        return date.split("T")[0];
+    }
 
     return (
         <section className="card">
@@ -27,8 +32,18 @@ const Card = ({ data }) => {
                         </span>
                         <span className="flex items-center gap-2">
                             <FiCalendar />
-                            {createdAt}
+                            {formatDate(createdAt)}
                         </span>
+                        {skills ? (
+                            <div className="flex gap-2 items-center">
+                                <HiOutlineClipboardList />
+                                {skills.map((skill, index) => (
+                                    <span key={index} className="text-primary/70 bg-primary/10 px-2 py-1 rounded-md text-sm">
+                                        {skill.label}
+                                    </span>
+                                ))}
+                            </div>
+                        ) : null}
                     </div>
 
                     <p className="text-base text-primary/70">{description}</p>

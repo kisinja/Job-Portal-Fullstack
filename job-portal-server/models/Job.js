@@ -32,8 +32,19 @@ const JobSchema = new mongoose.Schema({
         type: String,
     },
     postedBy: {
-        type: String,
-    }
+        type: mongoose.Types.ObjectId,
+        ref: 'User'
+    },
+    skills: [
+        {
+            value: {
+                type: String,
+            },
+            label: {
+                type: String,
+            }
+        }
+    ]
 }, { timestamps: true });
 
 module.exports = mongoose.model('Job', JobSchema);

@@ -1,9 +1,20 @@
+import { FaCalendarAlt, FaEnvelope, FaMapPin, FaPhoneAlt } from 'react-icons/fa';
 
 const PrivacyPolicy = () => {
+
+    const today = new Date();
+
+    const formatDate = (date) => {
+        return date.split("T")[0];
+    }
+
     return (
-        <div className="max-w-4xl mx-auto p-6">
-            <h1 className="text-2xl font-bold mb-4">Privacy Policy</h1>
-            <p className="text-gray-600 mb-4">Last Updated: 8/22/2024</p>
+        <section className="max-w-screen-2xl mx-auto py-6 px-4 xl:px-24">
+            <h1 className="text-2xl font-bold mb-4 text-blue">Privacy Policy</h1>
+            <p className="text-gray-600 mb-4 flex items-center gap-2">
+                <FaCalendarAlt className='text-lg text-primary/70' />
+                Last Updated: {formatDate(today.toISOString())}
+            </p>
 
             {/* Section 1: Information We Collect */}
             <h2 className="text-xl font-semibold mb-2">1. Information We Collect</h2>
@@ -85,11 +96,34 @@ const PrivacyPolicy = () => {
             <p className="mb-4">
                 If you have any questions about this Privacy Policy, please contact us at:
             </p>
-            <p className="mb-4">TechPoster</p>
-            <p className="mb-4">kisinjaelvis@gmail.com</p>
-            <p className="mb-4">+254 713782003</p>
-            <p className="mb-4">Nairobi, Kenya</p>
-        </div>
+            <p className="mb-4 flex items-center gap-2 font-bold">
+                <svg width="25" height="25" viewBox="0 0 29 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12.0143" cy="12.5143" r="12.0143" fill="#3575E2" fillOpacity="0.4" />
+                    <circle cx="16.9857" cy="17.4857" r="12.0143" fill="#3575E2" />
+                </svg>
+                TechPoster
+            </p>
+            <p className="mb-4 flex items-center gap-5">
+                <FaEnvelope
+                    className='text-primary/70'
+                />
+                support@techposter.co.ke
+            </p>
+            <p
+                className="mb-4 flex items-center gap-5">
+                <FaPhoneAlt
+                    className='text-primary/70'
+                />
+                +254 713782003, +254 759321026
+            </p>
+            <p
+                className="mb-4 flex items-center gap-5">
+                <FaMapPin
+                    className='text-primary/70'
+                />
+                Nairobi, Kenya
+            </p>
+        </section>
     );
 };
 

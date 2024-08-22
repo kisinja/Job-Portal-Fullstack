@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
+const path = require("path");
 
 const app = express();
 
@@ -40,6 +41,8 @@ startServer();
 app.get("/", (req, res) => {
     res.send("Welcome to Job Portal API");
 });
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Routes
 const uploadPic = require("./routes/uploadPic");

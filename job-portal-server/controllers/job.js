@@ -28,7 +28,7 @@ const getJobs = async (req, res) => {
     console.log(req.user);
 
     try {
-        const jobs = await Job.find().sort({ createdAt: -1 }).populate('postedBy', 'email');
+        const jobs = await Job.find().sort({ createdAt: -1 }).populate('postedBy', 'username email');
         if (!jobs) {
             res.status(400).json({ error: "No jobs found" });
         }
@@ -89,10 +89,26 @@ const deleteJob = async (req, res) => {
     }
 };
 
+// update job by id
+const updateJob = async (req, res) => {
+    try {
+        const job = await Job.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!job) {
+            res.status(400).json({ error: "No job found" });
+        }
+
+        res.status(200).json({ message: "Job updated successfully", job });
+    } catch (error) {
+        console.log(error.message);
+        res.json({ error: error.message }).status(500);
+    }
+};
+
 module.exports = {
     postJob,
     getJobs,
     getJobById,
     getJobByUserId,
-    deleteJob
+    deleteJob,
+    updateJob
 };
