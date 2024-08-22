@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAuthContext } from '../hooks/useAuthContext';
+import CreatableSelect from 'react-select/creatable';
 
 const Profile = () => {
     const { user, dispatch } = useAuthContext();
     const { userId } = useParams();
-    /* const BASE_URL = `http://localhost:7777/api/profile/`; */
     const BASE_URL = 'https://techposter-backend.onrender.com/api/profile';
 
     const [userProfile, setUserProfile] = useState({
@@ -14,12 +14,12 @@ const Profile = () => {
         bio: '',
         role: '',
         profilePic: '',
-        newSkills: [],  // Ensure this is always an array
+        userSkills: [],  // Ensure this is always an array
     });
-    const [newSkill, setNewSkill] = useState([]);  // New state for adding skills
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(true);
+
 
     useEffect(() => {
         const getProfile = async () => {
@@ -73,7 +73,7 @@ const Profile = () => {
         formData.append('email', userProfile.email);
         formData.append('bio', userProfile.bio);
         formData.append('role', userProfile.role);
-        formData.append('newSkills', JSON.stringify(userProfile.newSkills));  // Add skills to form data
+        formData.append('userSkills', JSON.stringify(userProfile.userSkills));  // Add skills to form data
 
         if (userProfile.profilePic instanceof File) {
             formData.append('profilePic', userProfile.profilePic);
@@ -93,7 +93,7 @@ const Profile = () => {
             if (res.ok) {
                 console.log(data);
                 setUserProfile(data.user);
-
+                setIsEditing(false);
                 const updatedUser = { ...user, ...data.user };
                 localStorage.setItem('user', JSON.stringify(updatedUser));
 
@@ -107,15 +107,14 @@ const Profile = () => {
         }
     };
 
-    const handleAddSkill = () => {
-        if (newSkill.trim() !== "") {
-            setUserProfile((prevProfile) => ({
-                ...prevProfile,
-                newSkills: [...(prevProfile.newSkills || []), newSkill],  // Ensure newSkills is an array
-            }));
-            setNewSkill("");
-        }
+    const handleSkillChange = (skills) => {
+        setUserProfile(prevProfile => ({
+            ...prevProfile,
+            userSkills: skills.map(skill => skill.value)  // Convert selected options to array of skill values
+        }));
     };
+
+    const skillOptions = userProfile.userSkills.map(skill => ({ value: skill, label: skill }));
 
     return (
         <div className='max-w-screen-2xl container xl:px-24 p-4 py-4'>
@@ -127,7 +126,7 @@ const Profile = () => {
                     <div className="flex flex-col items-center justify-center mt-4">
                         <img
                             className="w-32 h-32 rounded-full border-4 border-blue object-cover"
-                            src={`https://techposter-backend.onrender.com/uploads/${userProfile.profilePic}`}
+                            src={`https://techposter-backend.onrender.com/uploads/${user.profilePic}`}
                             alt="Profile"
                         />
                         {isEditing && (
@@ -139,7 +138,7 @@ const Profile = () => {
                             />
                         )}
                     </div>
-                    <form onSubmit={handleSubmit} className="mt-6 p-3 flex flex-col gap-3">
+                    <form onSubmit={handleSubmit} className="mt-6 py-6 px-12 flex flex-col gap-3">
                         <div>
                             <label className="text-lg font-semibold text-gray-800">Username:</label>
                             {isEditing ? (
@@ -196,31 +195,28 @@ const Profile = () => {
                             )}
                         </div>
 
-                        {/* New Skill Input Section */}
-                        {isEditing && (
+                        {/* Skills Input Section */}
+                        {isEditing ? (
                             <div>
-                                <label className="text-lg font-semibold text-gray-800">Add Skill:</label>
-                                <div className="flex items-center">
-                                    <input
-                                        type="text"
-                                        name="newSkill"
-                                        value={newSkill}
-                                        onChange={(e) => setNewSkill(e.target.value)}
-                                        className="w-full mt-1 p-2 border border-gray-300 rounded-md"
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={handleAddSkill}
-                                        className="ml-2 bg-blue text-white p-2 rounded-md"
-                                    >
-                                        Add
-                                    </button>
-                                </div>
-                                <ul className="mt-2">
-                                    {userProfile.newSkills && userProfile.newSkills.map((skill, index) => (
-                                        <li key={index} className="text-primary/70">{skill}</li>
+                                <label className="text-lg font-semibold text-gray-800">Skills:</label>
+                                <CreatableSelect
+                                    isMulti
+                                    value={skillOptions}
+                                    onChange={handleSkillChange}
+                                    placeholder="Add or select skills..."
+                                    className="w-full mt-1"
+                                />
+                            </div>
+                        ) : (
+                            <div className='flex items-center gap-2'>
+                                <label className="text-lg font-semibold text-gray-800">Skills:</label>
+                                <div className='flex flex-wrap gap-2'>
+                                    {userProfile.userSkills.map((skill, index) => (
+                                        <span key={index} className='bg-white p-1 rounded border'>
+                                            {skill}
+                                        </span>
                                     ))}
-                                </ul>
+                                </div>
                             </div>
                         )}
 
