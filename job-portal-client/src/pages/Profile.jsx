@@ -208,7 +208,7 @@ const Profile = () => {
                                 />
                             </div>
                         ) : (
-                            <div className='flex items-center gap-2'>
+                            <div className='flex gap-2 flex-col'>
                                 <label className="text-lg font-semibold text-gray-800">Skills:</label>
                                 <div className='flex flex-wrap gap-2'>
                                     {userProfile.userSkills.map((skill, index) => (
