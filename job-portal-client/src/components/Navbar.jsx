@@ -73,7 +73,8 @@ const Navbar = () => {
                                     My Jobs
                                 </Link>
                                 <Link to={`/profile/${user._id}`} className="py-2 px-5 text-base text-primary flex items-center gap-2">
-                                    <img src={`https:techposter-backend.onrender.com/uploads/${user.profilePic}`} alt="dp" className='w-12 h-12 rounded-full border-4 border-blue' />
+                                    <img src={`https://techposter-backend.onrender.com/uploads/${user.profilePic}`} alt="dp" className='w-12 h-12 rounded-full border-4 border-blue' />
+
                                     <span>{user.username}</span>
                                 </Link>
                                 <Link to="" className="py-2 px-5 text-red-600 text-base" onClick={handleClick}>
