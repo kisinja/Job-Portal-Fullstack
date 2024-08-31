@@ -138,6 +138,27 @@ const applyJob = async (req, res) => {
     }
 };
 
+// get the user applied jobs
+const getUserAppliedJobs = async (req, res) => {
+    try {
+        const userId = req.params.userId;
+
+        // Find jobs where the user ID is in the applicants array
+        const jobs = await Job.find({ applicants: userId })
+            .populate('postedBy', 'username email')
+            .sort({ createdAt: -1 });
+
+        if (jobs.length === 0) {
+            return res.status(404).json({ message: 'You have not applied for any jobs yet' });
+        }
+
+        res.status(200).json({ jobs });
+    } catch (error) {
+        console.log(error.message);
+        res.json({ error: error.message }).status(500);
+    }
+};
+
 module.exports = {
     postJob,
     getJobs,
@@ -145,5 +166,6 @@ module.exports = {
     getJobByUserId,
     deleteJob,
     updateJob,
-    applyJob
+    applyJob,
+    getUserAppliedJobs
 };

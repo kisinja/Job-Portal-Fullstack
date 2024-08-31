@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useAuthContext } from '../hooks/useAuthContext';
 import CreatableSelect from 'react-select/creatable';
 import Loader from '../components/Loader';
@@ -120,123 +120,140 @@ const Profile = () => {
     return (
         <div className='max-w-screen-2xl container xl:px-24 p-4 py-4'>
 
-            {loading && <Loader />}
+            {/* Sidebar */}
+            <div className="w-1/4 bg-gray-100 p-4 rounded-lg shadow-lg">
+                <h2 className="text-lg font-bold mb-4">Navigation</h2>
+                <ul className="space-y-2">
+                    <li>
+                        <Link to={`/profile/${userId}`} className="text-blue-500 hover:text-blue-700">Profile</Link>
+                    </li>
+                    <li>
+                        <Link to={`/profile/${userId}/applied-jobs`} className="text-blue-500 hover:text-blue-700">Applied Jobs</Link>
+                    </li>
+                </ul>
+            </div>
 
-            {!loading && userProfile && (
-                <div className="max-w-md mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
-                    <div className="flex flex-col items-center justify-center mt-4">
-                        <img
-                            className="w-32 h-32 rounded-full border-4 border-blue object-cover"
-                            src={`https://techposter-backend.onrender.com/uploads/${user.profilePic}`}
-                            alt="Profile"
-                        />
-                        {isEditing && (
-                            <input
-                                type="file"
-                                name="profilePic"
-                                onChange={handleFileChange}
-                                className="mt-2"
+            {/* Profile Content */}
+
+            <div className="w-3/4 ml-6">
+                {loading && <Loader />}
+
+                {!loading && userProfile && (
+                    <div className="max-w-md mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
+                        <div className="flex flex-col items-center justify-center mt-4">
+                            <img
+                                className="w-32 h-32 rounded-full border-4 border-blue object-cover"
+                                src={`https://techposter-backend.onrender.com/uploads/${user.profilePic}`}
+                                alt="Profile"
                             />
-                        )}
-                    </div>
-                    <form onSubmit={handleSubmit} className="mt-6 py-6 px-12 flex flex-col gap-3">
-                        <div>
-                            <label className="text-lg font-semibold text-gray-800">Username:</label>
-                            {isEditing ? (
+                            {isEditing && (
                                 <input
-                                    type="text"
-                                    name="username"
-                                    value={userProfile.username}
-                                    onChange={handleChange}
-                                    className="w-full mt-1 p-2 border border-gray-300 rounded-md"
+                                    type="file"
+                                    name="profilePic"
+                                    onChange={handleFileChange}
+                                    className="mt-2"
                                 />
-                            ) : (
-                                <span className='ml-2 text-primary/70'>{userProfile.username}</span>
                             )}
                         </div>
-                        <div>
-                            <label className="text-lg font-semibold text-gray-800">Email:</label>
-                            {isEditing ? (
-                                <input
-                                    type="email"
-                                    name="email"
-                                    value={userProfile.email}
-                                    onChange={handleChange}
-                                    className="w-full mt-1 p-2 border border-gray-300 rounded-md"
-                                />
-                            ) : (
-                                <span className='ml-2 text-primary/70'>{userProfile.email}</span>
-                            )}
-                        </div>
-                        <div>
-                            <label className="text-lg font-semibold text-gray-800">Role:</label>
-                            {isEditing ? (
-                                <input
-                                    type="text"
-                                    name="role"
-                                    value={userProfile.role}
-                                    onChange={handleChange}
-                                    className="w-full mt-1 p-2 border border-gray-300 rounded-md"
-                                />
-                            ) : (
-                                <span className='ml-2 text-primary/70'>{userProfile.role}</span>
-                            )}
-                        </div>
-                        <div>
-                            <label className="text-lg font-semibold text-gray-800">Bio:</label>
-                            {isEditing ? (
-                                <textarea
-                                    name="bio"
-                                    value={userProfile.bio}
-                                    onChange={handleChange}
-                                    className="w-full mt-1 p-2 border border-gray-300 rounded-md"
-                                ></textarea>
-                            ) : (
-                                <span className='ml-2 text-primary/70'>{userProfile.bio}</span>
-                            )}
-                        </div>
-
-                        {/* Skills Input Section */}
-                        {isEditing ? (
+                        <form onSubmit={handleSubmit} className="mt-6 py-6 px-12 flex flex-col gap-3">
                             <div>
-                                <label className="text-lg font-semibold text-gray-800">Skills:</label>
-                                <CreatableSelect
-                                    isMulti
-                                    value={skillOptions}
-                                    onChange={handleSkillChange}
-                                    placeholder="Add or select skills..."
-                                    className="w-full mt-1"
-                                />
+                                <label className="text-lg font-semibold text-gray-800">Username:</label>
+                                {isEditing ? (
+                                    <input
+                                        type="text"
+                                        name="username"
+                                        value={userProfile.username}
+                                        onChange={handleChange}
+                                        className="w-full mt-1 p-2 border border-gray-300 rounded-md"
+                                    />
+                                ) : (
+                                    <span className='ml-2 text-primary/70'>{userProfile.username}</span>
+                                )}
                             </div>
-                        ) : (
-                            <div className='flex gap-2 flex-col'>
-                                <label className="text-lg font-semibold text-gray-800">Skills:</label>
-                                <div className='flex flex-wrap gap-2'>
-                                    {userProfile.userSkills.map((skill, index) => (
-                                        <span key={index} className='bg-orange-50 p-1 rounded border border-blue'>
-                                            {skill}
-                                        </span>
-                                    ))}
-                                </div>
+                            <div>
+                                <label className="text-lg font-semibold text-gray-800">Email:</label>
+                                {isEditing ? (
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        value={userProfile.email}
+                                        onChange={handleChange}
+                                        className="w-full mt-1 p-2 border border-gray-300 rounded-md"
+                                    />
+                                ) : (
+                                    <span className='ml-2 text-primary/70'>{userProfile.email}</span>
+                                )}
                             </div>
-                        )}
+                            <div>
+                                <label className="text-lg font-semibold text-gray-800">Role:</label>
+                                {isEditing ? (
+                                    <input
+                                        type="text"
+                                        name="role"
+                                        value={userProfile.role}
+                                        onChange={handleChange}
+                                        className="w-full mt-1 p-2 border border-gray-300 rounded-md"
+                                    />
+                                ) : (
+                                    <span className='ml-2 text-primary/70'>{userProfile.role}</span>
+                                )}
+                            </div>
+                            <div>
+                                <label className="text-lg font-semibold text-gray-800">Bio:</label>
+                                {isEditing ? (
+                                    <textarea
+                                        name="bio"
+                                        value={userProfile.bio}
+                                        onChange={handleChange}
+                                        className="w-full mt-1 p-2 border border-gray-300 rounded-md"
+                                    ></textarea>
+                                ) : (
+                                    <span className='ml-2 text-primary/70'>{userProfile.bio}</span>
+                                )}
+                            </div>
 
-                        {isEditing ? (
-                            <button type="submit" className="mt-4 bg-blue text-white p-2 rounded-md">
-                                {loading ? "Saving..." : "Save Changes"}
-                            </button>
-                        ) : (
-                            <button
-                                type="button"
-                                className="mt-4 bg-yellow-500 text-white p-2 rounded-md"
-                                onClick={() => setIsEditing(!isEditing)}
-                            >
-                                Edit Profile
-                            </button>
-                        )}
-                    </form>
-                </div>
-            )}
+                            {/* Skills Input Section */}
+                            {isEditing ? (
+                                <div>
+                                    <label className="text-lg font-semibold text-gray-800">Skills:</label>
+                                    <CreatableSelect
+                                        isMulti
+                                        value={skillOptions}
+                                        onChange={handleSkillChange}
+                                        placeholder="Add or select skills..."
+                                        className="w-full mt-1"
+                                    />
+                                </div>
+                            ) : (
+                                <div className='flex gap-2 flex-col'>
+                                    <label className="text-lg font-semibold text-gray-800">Skills:</label>
+                                    <div className='flex flex-wrap gap-2'>
+                                        {userProfile.userSkills.map((skill, index) => (
+                                            <span key={index} className='bg-orange-50 p-1 rounded border border-blue'>
+                                                {skill}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {isEditing ? (
+                                <button type="submit" className="mt-4 bg-blue text-white p-2 rounded-md">
+                                    {loading ? "Saving..." : "Save Changes"}
+                                </button>
+                            ) : (
+                                <button
+                                    type="button"
+                                    className="mt-4 bg-yellow-500 text-white p-2 rounded-md"
+                                    onClick={() => setIsEditing(!isEditing)}
+                                >
+                                    Edit Profile
+                                </button>
+                            )}
+                        </form>
+                    </div>
+                )}
+            </div>
 
             {error && <div className='error'>{error}</div>}
         </div>
