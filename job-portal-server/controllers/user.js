@@ -1,8 +1,8 @@
-const User = require('../models/User');
-const bcrypt = require('bcryptjs');
+import User from '../models/User.js';
+import bcrypt from 'bcryptjs';
 
 // update user profile
-const updateUserProfile = async (req, res) => {
+export const updateUserProfile = async (req, res) => {
     try {
         const { userId } = req.params;
         const { username, email, bio, userSkills } = req.body; // Ensure userSkills is included
@@ -47,7 +47,7 @@ const updateUserProfile = async (req, res) => {
 
 
 // get user profile
-const getUserProfile = async (req, res) => {
+export const getUserProfile = async (req, res) => {
 
     const { userId } = req.params;
 
@@ -62,9 +62,4 @@ const getUserProfile = async (req, res) => {
         res.json({ error: error.message }).status(500);
         console.log(error.message);
     }
-};
-
-module.exports = {
-    updateUserProfile,
-    getUserProfile
 };

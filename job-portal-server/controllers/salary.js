@@ -25,7 +25,7 @@ const calculateEstimatedSalary = (experienceLevel, jobTitle, location, industry)
 };
 
 // Get estimated salary for a job
-const getSalaryEstimate = (req, res) => {
+export const getSalaryEstimate = (req, res) => {
     try {
         const { experienceLevel, jobTitle, location, industry } = req.body;
 
@@ -42,4 +42,3 @@ const getSalaryEstimate = (req, res) => {
     }
 };
 
-module.exports = { getSalaryEstimate };

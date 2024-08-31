@@ -15,12 +15,13 @@ const Profile = () => {
         bio: '',
         role: '',
         profilePic: '',
-        userSkills: [],  // Ensure this is always an array
+        userSkills: [], // Ensure this is always an array
+        experience: 0, // Add experience field
+        education: '', // Add education field
     });
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(true);
-
 
     useEffect(() => {
         const getProfile = async () => {
@@ -74,7 +75,9 @@ const Profile = () => {
         formData.append('email', userProfile.email);
         formData.append('bio', userProfile.bio);
         formData.append('role', userProfile.role);
-        formData.append('userSkills', JSON.stringify(userProfile.userSkills));  // Add skills to form data
+        formData.append('experience', userProfile.experience); // Include experience
+        formData.append('education', userProfile.education); // Include education
+        formData.append('userSkills', JSON.stringify(userProfile.userSkills)); // Add skills to form data
 
         if (userProfile.profilePic instanceof File) {
             formData.append('profilePic', userProfile.profilePic);
@@ -111,31 +114,30 @@ const Profile = () => {
     const handleSkillChange = (skills) => {
         setUserProfile(prevProfile => ({
             ...prevProfile,
-            userSkills: skills.map(skill => skill.value)  // Convert selected options to array of skill values
+            userSkills: skills.map(skill => skill.value) // Convert selected options to array of skill values
         }));
     };
 
     const skillOptions = userProfile.userSkills.map(skill => ({ value: skill, label: skill }));
 
     return (
-        <div className='max-w-screen-2xl container xl:px-24 p-4 py-4'>
+        <div className='max-w-screen-2xl container xl:px-24 p-4 py-4 relative'>
 
             {/* Sidebar */}
-            <div className="w-1/4 bg-gray-100 p-4 rounded-lg shadow-lg">
-                <h2 className="text-lg font-bold mb-4">Navigation</h2>
+            <div className="w-1/4 bg-blue p-4 rounded-lg shadow-lg absolute">
+                <h2 className="text-lg font-bold mb-4 ">Navigation</h2>
                 <ul className="space-y-2">
                     <li>
-                        <Link to={`/profile/${userId}`} className="text-blue-500 hover:text-blue-700">Profile</Link>
+                        <Link to={`/profile/${userId}`} className="text-white hover:text-blue-700">Profile</Link>
                     </li>
                     <li>
-                        <Link to={`/profile/${userId}/applied-jobs`} className="text-blue-500 hover:text-blue-700">Applied Jobs</Link>
+                        <Link to={`/profile/${userId}/applied-jobs`} className="text-white hover:text-blue-700">Applied Jobs</Link>
                     </li>
                 </ul>
             </div>
 
             {/* Profile Content */}
-
-            <div className="w-3/4 ml-6">
+            <div className="w-3/4 ml-6 flex justify-center items-center">
                 {loading && <Loader />}
 
                 {!loading && userProfile && (
@@ -212,6 +214,39 @@ const Profile = () => {
                                 )}
                             </div>
 
+                            {/* Experience Input Section */}
+                            <div>
+                                <label className="text-lg font-semibold text-gray-800">Experience (years):</label>
+                                {isEditing ? (
+                                    <input
+                                        type="number"
+                                        name="experience"
+                                        value={userProfile.experience}
+                                        onChange={handleChange}
+                                        className="w-full mt-1 p-2 border border-gray-300 rounded-md"
+                                        min="0"
+                                    />
+                                ) : (
+                                    <span className='ml-2 text-primary/70'>{userProfile.experience} years</span>
+                                )}
+                            </div>
+
+                            {/* Education Input Section */}
+                            <div>
+                                <label className="text-lg font-semibold text-gray-800">Education:</label>
+                                {isEditing ? (
+                                    <input
+                                        type="text"
+                                        name="education"
+                                        value={userProfile.education}
+                                        onChange={handleChange}
+                                        className="w-full mt-1 p-2 border border-gray-300 rounded-md"
+                                    />
+                                ) : (
+                                    <span className='ml-2 text-primary/70'>{userProfile.education}</span>
+                                )}
+                            </div>
+
                             {/* Skills Input Section */}
                             {isEditing ? (
                                 <div>
@@ -227,35 +262,27 @@ const Profile = () => {
                             ) : (
                                 <div className='flex gap-2 flex-col'>
                                     <label className="text-lg font-semibold text-gray-800">Skills:</label>
-                                    <div className='flex flex-wrap gap-2'>
+                                    <ul className='ml-2 text-primary/70'>
                                         {userProfile.userSkills.map((skill, index) => (
-                                            <span key={index} className='bg-orange-50 p-1 rounded border border-blue'>
-                                                {skill}
-                                            </span>
+                                            <li key={index}>{skill}</li>
                                         ))}
-                                    </div>
+                                    </ul>
                                 </div>
                             )}
 
-                            {isEditing ? (
-                                <button type="submit" className="mt-4 bg-blue text-white p-2 rounded-md">
-                                    {loading ? "Saving..." : "Save Changes"}
-                                </button>
-                            ) : (
+                            {error && <div className="error">{error}</div>}
+                            {isEditing && (
                                 <button
-                                    type="button"
-                                    className="mt-4 bg-yellow-500 text-white p-2 rounded-md"
-                                    onClick={() => setIsEditing(!isEditing)}
+                                    type="submit"
+                                    className="w-full mt-4 bg-blue text-white py-2 px-4 rounded-md hover:bg-blue-600"
                                 >
-                                    Edit Profile
+                                    Save Changes
                                 </button>
                             )}
                         </form>
                     </div>
                 )}
             </div>
-
-            {error && <div className='error'>{error}</div>}
         </div>
     );
 };

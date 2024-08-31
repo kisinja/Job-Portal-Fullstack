@@ -1,10 +1,10 @@
-const express = require("express");
+import express from 'express';
 const router = express.Router();
 
-const requireAuth = require("../middleware/requireAuth");
-const upload = require("../middleware/multerConfig");
+import requireAuth from "../middleware/requireAuth.js";
+import upload from "../middleware/multerConfig.js";
 
-const { updateUserProfile, getUserProfile } = require("../controllers/user");
+import {updateUserProfile, getUserProfile} from '../controllers/user.js';
 
 // update user profile
 router.put("/update/:userId", upload.single("profilePic"), requireAuth, updateUserProfile);
@@ -12,4 +12,4 @@ router.put("/update/:userId", upload.single("profilePic"), requireAuth, updateUs
 // get user profile
 router.get("/:userId", requireAuth, getUserProfile);
 
-module.exports = router;
+export default router;

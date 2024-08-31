@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
 
 const courseSchema = new mongoose.Schema({
     courseName: {
@@ -14,3 +14,5 @@ const courseSchema = new mongoose.Schema({
         type: String,
     }
 });
+
+export default Course;

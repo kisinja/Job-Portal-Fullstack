@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
-const validator = require('validator');
+import mongoose from "mongoose";
+import bcrypt from 'bcryptjs';
+import validator from 'validator';
 
 const userSchema = new mongoose.Schema({
     username: {
@@ -44,7 +44,15 @@ const userSchema = new mongoose.Schema({
             type: mongoose.Types.ObjectId,
             ref: 'Job'
         }
-    ]
+    ],
+    experience: {
+        type: Number,
+        default: 0
+    },
+    education: {
+        type: String, // Example: 'Bachelor's Degree'
+        default: 'High School'
+    },
 }, { timestamps: true });
 
 // Static sign up method
@@ -120,4 +128,4 @@ userSchema.statics.login = async function (email, password) {
 
 const User = mongoose.model('User', userSchema);
 
-module.exports = User;
+export default User;

@@ -1,9 +1,8 @@
-const Job = require('../models/Job');
-const User = require('../models/User');
-const mongoose = require('mongoose');
+import Job from '../models/Job.js';
+import User from '../models/User.js';
 
 // post a new job
-const postJob = async (req, res) => {
+export const postJob = async (req, res) => {
     try {
         const job = await Job.create({
             ...req.body,
@@ -24,7 +23,7 @@ const postJob = async (req, res) => {
 };
 
 // get all jobs
-const getJobs = async (req, res) => {
+export const getJobs = async (req, res) => {
 
     console.log(req.user);
 
@@ -42,7 +41,7 @@ const getJobs = async (req, res) => {
 };
 
 // get a job by id
-const getJobById = async (req, res) => {
+export const getJobById = async (req, res) => {
     try {
         const job = await Job.findById(req.params.id);
         if (!job) {
@@ -57,7 +56,7 @@ const getJobById = async (req, res) => {
 };
 
 // get job by user id
-const getJobByUserId = async (req, res) => {
+export const getJobByUserId = async (req, res) => {
 
     const { userId } = req.params;
 
@@ -76,7 +75,7 @@ const getJobByUserId = async (req, res) => {
 };
 
 // delete job by id
-const deleteJob = async (req, res) => {
+export const deleteJob = async (req, res) => {
     try {
         const job = await Job.findByIdAndDelete(req.params.id);
         if (!job) {
@@ -91,7 +90,7 @@ const deleteJob = async (req, res) => {
 };
 
 // update job by id
-const updateJob = async (req, res) => {
+export const updateJob = async (req, res) => {
     try {
         const job = await Job.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!job) {
@@ -106,7 +105,7 @@ const updateJob = async (req, res) => {
 };
 
 // apply for a job
-const applyJob = async (req, res) => {
+export const applyJob = async (req, res) => {
     const { userId, jobId } = req.body;
 
     try {
@@ -139,7 +138,7 @@ const applyJob = async (req, res) => {
 };
 
 // get the user applied jobs
-const getUserAppliedJobs = async (req, res) => {
+export const getUserAppliedJobs = async (req, res) => {
     try {
         const userId = req.params.userId;
 
@@ -157,15 +156,4 @@ const getUserAppliedJobs = async (req, res) => {
         console.log(error.message);
         res.json({ error: error.message }).status(500);
     }
-};
-
-module.exports = {
-    postJob,
-    getJobs,
-    getJobById,
-    getJobByUserId,
-    deleteJob,
-    updateJob,
-    applyJob,
-    getUserAppliedJobs
 };

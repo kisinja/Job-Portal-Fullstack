@@ -1,10 +1,10 @@
-const express = require('express');
-const { getJobs, postJob, getJobById, getJobByUserId, deleteJob, updateJob, applyJob, getUserAppliedJobs } = require('../controllers/job');
+import express from 'express';
+import { getJobs, postJob, getJobById, getJobByUserId, deleteJob, updateJob, applyJob, getUserAppliedJobs } from '../controllers/job.js';
 
 const router = express.Router();
 
 // middleware
-const requireAuth = require('../middleware/requireAuth');
+import requireAuth from '../middleware/requireAuth.js';
 
 // use middleware
 /* router.use(requireAuth); */
@@ -31,6 +31,6 @@ router.put('/:id', requireAuth, updateJob);
 router.post('/apply', requireAuth, applyJob);
 
 // get user applied jobs
-router.post('/applied/:userId', requireAuth, getUserAppliedJobs);
+router.get('/applied/:userId', requireAuth, getUserAppliedJobs);
 
-module.exports = router;
+export default router;

@@ -1,8 +1,8 @@
-const express = require("express");
+import express from 'express';
 const router = express.Router();
-const upload = require("../middleware/multerConfig");
+import upload from "../middleware/multerConfig.js";
 
-const requireAuth = require("../middleware/requireAuth");
+import requireAuth from "../middleware/requireAuth.js";
 
 
 router.post("/uploadPic", upload.single("profilePic"), (req, res) => {
@@ -21,4 +21,4 @@ router.post("/uploadPic", upload.single("profilePic"), (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

@@ -1,11 +1,11 @@
-const User = require('../models/User');
-const jwt = require('jsonwebtoken');
-const crypto = require('crypto');
-const nodemailer = require('nodemailer');
-const bcrypt = require('bcryptjs');
+import User from '../models/User.js';
+import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
+import nodemailer from 'nodemailer';
+import bcrypt from 'bcryptjs';
 
 // create token
-const createToken = (_id) => {
+export const createToken = (_id) => {
     const token = jwt.sign({ _id: _id }, process.env.JWT_SECRET, {
         expiresIn: '3d'
     });
@@ -14,7 +14,7 @@ const createToken = (_id) => {
 };
 
 // login user
-const loginUser = async (req, res) => {
+export const loginUser = async (req, res) => {
     const { email, password } = req.body;
 
     try {
@@ -41,7 +41,7 @@ const loginUser = async (req, res) => {
 };
 
 // sign up user
-const registerUser = async (req, res) => {
+export const registerUser = async (req, res) => {
     const { username, email, password } = req.body;
     try {
         // check if user exists using the signUp method from the User model
@@ -68,7 +68,7 @@ const registerUser = async (req, res) => {
 };
 
 // forgot password
-const forgotPassword = async (req, res) => {
+export const forgotPassword = async (req, res) => {
     const { email } = req.body;
 
     try {
@@ -123,7 +123,7 @@ const forgotPassword = async (req, res) => {
 };
 
 // reset password
-const resetPassword = async (req, res) => {
+export const resetPassword = async (req, res) => {
     const { token } = req.params;
     const { password } = req.body;
 
@@ -156,11 +156,4 @@ const resetPassword = async (req, res) => {
         console.error(error.message);
         res.status(400).json({ error: error.message });
     }
-};
-
-module.exports = {
-    loginUser,
-    registerUser,
-    forgotPassword,
-    resetPassword
 };

@@ -36,7 +36,7 @@ const App = () => {
           <Route path="/salary" element={user ? <Salary /> : <Navigate to="/login" />} />
           <Route path="/post-job" element={user ? <PostJob /> : <Navigate to="/login" />} />
           <Route path="/profile/:userId" element={user ? <Profile /> : <Navigate to="/login" />} />
-          <Route path="/profile/:userId/applied-jobs" element={<AppliedJobs />} />
+          <Route path="/profile/:userId/applied-jobs" element={user ? <AppliedJobs /> : <Navigate to="/login" />} />
           <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
           <Route path="/signup" element={!user ? <SignUp /> : <Navigate to="/" />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
