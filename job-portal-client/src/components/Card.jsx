@@ -12,7 +12,7 @@ const Card = ({ data }) => {
 
     return (
         <section className="card">
-            <Link to={"/"} className="flex gap-4 flex-col sm:flex-row items-start">
+            <Link to={`/job/${data._id}`} className="flex gap-4 flex-col sm:flex-row items-start">
                 <div className="w-full h-[150px] mx-auto p-2 shadow flex justify-center">
                     <img src={companyLogo} alt="" className="w-full h-full object-contain" />
                 </div>
@@ -35,10 +35,10 @@ const Card = ({ data }) => {
                             {formatDate(createdAt)}
                         </span>
                         {skills ? (
-                            <div className="flex gap-2 items-center">
+                            <div className="flex gap-2 items-center flex-wrap">
                                 <HiOutlineClipboardList />
                                 {skills.map((skill, index) => (
-                                    <span key={index} className="text-primary/70 bg-primary/10 px-2 py-1 rounded-md text-sm">
+                                    <span key={index} className="text-primary/70 bg-primary/10 px-2 py-1 rounded-md text-sm flex flex-wrap">
                                         {skill.label}
                                     </span>
                                 ))}

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAuthContext } from '../hooks/useAuthContext';
 import CreatableSelect from 'react-select/creatable';
+import Loader from '../components/Loader';
 
 const Profile = () => {
     const { user, dispatch } = useAuthContext();
@@ -119,7 +120,7 @@ const Profile = () => {
     return (
         <div className='max-w-screen-2xl container xl:px-24 p-4 py-4'>
 
-            {loading && <div className='text-center'>Loading...</div>}
+            {loading && <Loader />}
 
             {!loading && userProfile && (
                 <div className="max-w-md mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
@@ -222,7 +223,7 @@ const Profile = () => {
 
                         {isEditing ? (
                             <button type="submit" className="mt-4 bg-blue text-white p-2 rounded-md">
-                                Save Changes
+                                {loading ? "Saving..." : "Save Changes"}
                             </button>
                         ) : (
                             <button

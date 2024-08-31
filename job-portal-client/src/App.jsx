@@ -16,6 +16,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import EditJob from "./pages/EditJob";
+import JobDetails from "./pages/JobDetails";
 
 const App = () => {
 
@@ -30,6 +31,7 @@ const App = () => {
           <Route path="/about" element={user ? <About /> : <Navigate to="/login" />} />
           <Route path="/my-jobs/:userId" element={user ? <MyJobs /> : <Navigate to="/login" />} />
           <Route path="/edit-job/:id" element={user ? <EditJob /> : <Navigate to="/login" />} />
+          <Route path="/job/:id" element={user ? <JobDetails /> : <Navigate to="/login" />} />
           <Route path="/salary" element={user ? <Salary /> : <Navigate to="/login" />} />
           <Route path="/post-job" element={user ? <PostJob /> : <Navigate to="/login" />} />
           <Route path="/profile/:userId" element={user ? <Profile /> : <Navigate to="/login" />} />

@@ -36,7 +36,15 @@ const userSchema = new mongoose.Schema({
 
     // For password reset
     resetPasswordToken: String,
-    resetPasswordExpires: Date
+    resetPasswordExpires: Date,
+
+    // applied jobs
+    appliedJobs: [
+        {
+            type: mongoose.Types.ObjectId,
+            ref: 'Job'
+        }
+    ]
 }, { timestamps: true });
 
 // Static sign up method
