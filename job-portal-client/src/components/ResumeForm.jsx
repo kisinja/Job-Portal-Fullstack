@@ -92,7 +92,7 @@ const ResumeForm = () => {
     return (
         <div className='xl:px-24 px-8 py-6'>
 
-
+            <h1 className="text-center font-light text-4xl mb-4">Create your Resume</h1>
 
             <div className='bg-orange-50'>
                 <form onSubmit={handleSubmit(onSubmit)} className="p-5">
