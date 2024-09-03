@@ -18,6 +18,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import EditJob from "./pages/EditJob";
 import JobDetails from "./pages/JobDetails";
 import AppliedJobs from "./pages/AppliedJobs";
+import ResumeForm from "./components/ResumeForm";
 
 const App = () => {
 
@@ -36,6 +37,10 @@ const App = () => {
           <Route path="/salary" element={user ? <Salary /> : <Navigate to="/login" />} />
           <Route path="/post-job" element={user ? <PostJob /> : <Navigate to="/login" />} />
           <Route path="/profile/:userId" element={user ? <Profile /> : <Navigate to="/login" />} />
+
+
+          <Route path="/generate-resume" element={user ? <ResumeForm /> : <Navigate to="/login" />} />
+
           <Route path="/profile/:userId/applied-jobs" element={user ? <AppliedJobs /> : <Navigate to="/login" />} />
           <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
           <Route path="/signup" element={!user ? <SignUp /> : <Navigate to="/" />} />

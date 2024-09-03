@@ -134,6 +134,10 @@ li {
     border-radius: 50%;
 }
 
+textarea {
+    resize: none;
+}
+
 #signup-page {
     width: 100%;
     height: 100vh;

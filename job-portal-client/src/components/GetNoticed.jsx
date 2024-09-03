@@ -1,4 +1,5 @@
 import { FaRocket } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const GetNoticed = () => {
     return (
@@ -11,7 +12,12 @@ const GetNoticed = () => {
                 Introducing our new resume builder: easily create and customize your resume directly on our platform!
             </p>
 
-            <button type="submit" className="bg-blue text-white py-2 px-5 rounded-md focus:bg-orange-50 focus:text-black focus:ring-4 focus:ring-blue focus:outline-none">Try it Now</button>
+
+            <button type="submit" className="bg-blue text-white py-2 px-5 rounded-md focus:bg-orange-50 focus:text-black focus:ring-4 focus:ring-blue focus:outline-none">
+                <Link to="/generate-resume">
+                    Try it Now
+                </Link>
+            </button>
         </div>
     )
 }

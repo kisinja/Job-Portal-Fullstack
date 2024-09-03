@@ -26,7 +26,10 @@ export const createResume = async (req, res) => {
         const resume = await newResume.save();
         if (!resume) return res.json({ error: "Error while creating resume!" });
 
-        res.status(201).json(resume);
+        res.status(201).json({
+            message: "Resume created Successfully",
+            resume
+        });
     } catch (error) {
         console.log(error.message);
         res.json({ error: error.message }).status(500);
