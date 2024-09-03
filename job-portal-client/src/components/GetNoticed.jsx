@@ -8,10 +8,10 @@ const GetNoticed = () => {
                 Get noticed faster
             </h3>
             <p className="text-primary/70 text-sm">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. At, id molestiae! Voluptatum, reprehenderit commodi. Quasi delectus odio fugit id eaque!
+                Introducing our new resume builder: easily create and customize your resume directly on our platform!
             </p>
 
-            <button type="submit" className="bg-blue text-white py-2 px-5 rounded-md ">Upload your resume</button>
+            <button type="submit" className="bg-blue text-white py-2 px-5 rounded-md focus:bg-orange-50 focus:text-black focus:ring-4 focus:ring-blue focus:outline-none">Try it Now</button>
         </div>
     )
 }

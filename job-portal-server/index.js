@@ -54,6 +54,7 @@ import jobRoutes from "./routes/jobs.js";
 import userRoutes from "./routes/user.js";
 import salaryRoutes from "./routes/salary.js";
 import courseRoutes from "./routes/course.js";
+import resumeRoutes from "./routes/resume.js";
 
 app.use("/api", uploadPic);
 app.use("/api/auth", authRoutes);
@@ -61,3 +62,4 @@ app.use("/api/jobs", jobRoutes);
 app.use("/api/profile", userRoutes);
 app.use("/api/salary", salaryRoutes);
 app.use("/api/courses", courseRoutes);
+app.use("/api/resumes", resumeRoutes);

@@ -160,7 +160,7 @@ const Home = () => {
 
                 {/* right side */}
                 <div className="bg-white p-4 rounded">
-                    <h3 className="font-bold text-2xl text-primary">Newsletter</h3>
+                    <h3 className="font-bold text-2xl text-primary mb-3">Newsletter</h3>
                     <NewsLetter />
                 </div>
             </div>

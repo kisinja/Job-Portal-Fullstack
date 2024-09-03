@@ -15,7 +15,11 @@ const JobDetails = () => {
 
     // Qualification check function
     const checkUserQualification = (user, job) => {
-        const missingSkills = job.skills.filter(skill => !user.userSkills.includes(skill));
+        if (!Array.isArray(job.skills) || !Array.isArray(user.userSkills)) {
+            return { qualifies: false, missingSkills: [], experienceRequirementMet: false, educationRequirementMet: false };
+        }
+
+        const missingSkills = job.skills.filter(skill => !user.userSkills.some(userSkill => userSkill === skill.value));
         const experienceRequirementMet = user.experience >= job.requiredExperience;
         const educationRequirementMet = user.education === job.requiredEducation;
 
@@ -33,11 +37,16 @@ const JobDetails = () => {
 
     // Fetch suggested courses based on missing skills
     const fetchSuggestedCourses = async (missingSkills) => {
-        const searchQuery = missingSkills.join(',');
+        if (!Array.isArray(missingSkills)) {
+            console.error('Missing skills is not an array');
+            return;
+        }
+
+        const searchQuery = missingSkills.map(skill => skill.value).join(',');
         const udemyApiUrl = `http://localhost:7777/api/courses/suggest-courses?search=${encodeURIComponent(searchQuery)}`;
 
         try {
-            const res = await fetch(udemyApiUrl, {
+            const response = await fetch(udemyApiUrl, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${user.token}`,
@@ -45,9 +54,9 @@ const JobDetails = () => {
                 },
             });
 
-            const data = await res.json();
-            console.log(data)
-            setSuggestedCourses(data.results);
+            const data = await response.json();
+            console.log(data);
+            setSuggestedCourses(data.results || []);
         } catch (error) {
             console.error('Failed to fetch courses:', error);
         }
@@ -65,7 +74,7 @@ const JobDetails = () => {
             const applicationDetails = { userId: user._id, jobId: job._id };
 
             try {
-                const res = await fetch(`https://techposter-backend.onrender.com/api/jobs/apply`, {
+                const response = await fetch(`https://techposter-backend.onrender.com/api/jobs/apply`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -74,12 +83,12 @@ const JobDetails = () => {
                     body: JSON.stringify(applicationDetails)
                 });
 
-                if (res.ok) {
-                    const data = await res.json();
+                if (response.ok) {
+                    const data = await response.json();
                     console.log(data);
                     setMessage(data.message);
                 } else {
-                    const data = await res.json();
+                    const data = await response.json();
                     console.log(data);
                     setErr(data.error);
                 }
@@ -90,7 +99,8 @@ const JobDetails = () => {
         } else {
             // If the user doesn't qualify, fetch suggested courses
             setMessage("You don't qualify for this job. Here are some courses to improve your skills:");
-            fetchSuggestedCourses(qualificationResult.missingSkills);
+            const validMissingSkills = Array.isArray(qualificationResult.missingSkills) ? qualificationResult.missingSkills : [];
+            fetchSuggestedCourses(validMissingSkills);
         }
 
         setLoading(false);
@@ -101,7 +111,7 @@ const JobDetails = () => {
             setLoading(true);
 
             try {
-                const res = await fetch(BASE_URL, {
+                const response = await fetch(BASE_URL, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -109,9 +119,9 @@ const JobDetails = () => {
                     },
                 });
 
-                const data = await res.json();
+                const data = await response.json();
 
-                if (res.ok) {
+                if (response.ok) {
                     setJob(data);
                 } else {
                     setErr(data.error);
@@ -157,7 +167,7 @@ const JobDetails = () => {
                     <h3 className="text-xl font-semibold">Skills Required</h3>
                     <div className="mt-2 flex gap-2 flex-wrap">
                         {job.skills && job.skills.map((skill) => (
-                            <span key={skill._id} className='bg-orange-50 p-1 rounded border border-blue'>{skill.value}</span>
+                            <span key={skill.key} className='bg-orange-50 p-1 rounded border border-blue'>{skill.value}</span>
                         ))}
                     </div>
                 </div>

@@ -8,12 +8,12 @@ const EmailMe = () => {
                 Email me for jobs
             </h3>
             <p className="text-primary/70 text-sm">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. At, id molestiae! Voluptatum, reprehenderit commodi. Quasi delectus odio fugit id eaque!
+                Stay updated! Enter your email to receive our newsletter with the latest news and updates.
             </p>
 
             <form action="" className="flex flex-col gap-3">
                 <input type="text" placeholder='eg..name@mail.com' className="border rounded-md placeholder:text-gray-300 text-gray-500 py-2 px-6 w-full" />
-                <button type="submit" className="bg-blue text-white py-2 px-5 rounded-md ">Subscribe</button>
+                <button type="submit" className="bg-blue text-white py-2 px-5 rounded-md focus:bg-orange-50 focus:text-black focus:ring-4 focus:ring-blue focus:outline-none">Subscribe</button>
             </form>
         </div>
     )
