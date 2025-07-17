@@ -46,7 +46,7 @@ const Home = () => {
     if (user?.token) {
       fetchJobs();
     }
-  }, [user]);
+  }, []);
 
   const handleInputChange = (e) => setQuery(e.target.value);
   const handleChange = (e) => setSelectedCategory(e.target.value);
@@ -119,7 +119,12 @@ const Home = () => {
         {/* Middle - Job Cards */}
         <div className="col-span-2 bg-white p-2 rounded-sm">
           {loading ? (
-            <Loader />
+            <div className="flex items-center justify-center min-h-screen">
+              <div>
+                <Loader />
+                <span className="text-lg text-gray-500">Loading...</span>
+              </div>
+            </div>
           ) : result.length > 0 ? (
             <Jobs result={result} />
           ) : (
