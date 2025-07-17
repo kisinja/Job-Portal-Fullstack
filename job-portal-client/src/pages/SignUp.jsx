@@ -66,7 +66,7 @@ const SignUp = () => {
 
                 {error && <div className="error">{error}</div>}
 
-                <button type="submit" className="mx-auto bg-blue text-white py-2 px-5 rounded-md flex justify-center items-center mt-3">
+                <button type="submit" className="mx-auto py-2 px-5 rounded-md flex justify-center items-center mt-3" id="auth-btn">
                     {loading ? "Loading..." : "Sign Up"}
                 </button>
             </form>
