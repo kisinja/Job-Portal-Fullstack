@@ -7,7 +7,7 @@ import Loader from '../components/Loader';
 const Profile = () => {
     const { user, dispatch } = useAuthContext();
     const { userId } = useParams();
-    const BASE_URL = 'https://techposter-backend.onrender.com/api/profile';
+    const BASE_URL = `${import.meta.env.VITE_BACKEND_URL}/profile`;
 
     const [userProfile, setUserProfile] = useState({
         username: '',

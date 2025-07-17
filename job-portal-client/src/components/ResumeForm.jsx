@@ -32,7 +32,7 @@ const ResumeForm = () => {
 
     const { user } = useAuthContext();
 
-    const BASE_URL = 'http://localhost:7777/api/resumes';
+    const BASE_URL = `${import.meta.env.VITE_BACKEND_URL}/resumes`;
 
     const { fields: experienceFields, append: appendExperience } = useFieldArray({
         control,

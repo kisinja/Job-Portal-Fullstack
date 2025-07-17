@@ -46,7 +46,7 @@ const Card = ({ data }) => {
                         ) : null}
                     </div>
 
-                    <p className="text-base text-primary/70">{description}</p>
+                    <p className="text-base text-primary/70 line-clamp-3">{description}</p>
                 </div>
             </Link>
         </section>

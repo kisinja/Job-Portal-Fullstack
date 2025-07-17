@@ -5,6 +5,7 @@ const router = express.Router();
 
 // middleware
 import requireAuth from '../middleware/requireAuth.js';
+import { checkQualificationMiddleware } from '../middleware/checkQualificationMiddleware.js';
 
 // use middleware
 /* router.use(requireAuth); */
@@ -28,7 +29,7 @@ router.delete('/:id', requireAuth, deleteJob);
 router.put('/:id', requireAuth, updateJob);
 
 // apply for a job
-router.post('/apply', requireAuth, applyJob);
+router.post('/apply/:jobId', requireAuth, applyJob);
 
 // get user applied jobs
 router.get('/applied/:userId', requireAuth, getUserAppliedJobs);

@@ -1,5 +1,6 @@
 import Job from '../models/Job.js';
 import User from '../models/User.js';
+import { checkUserQualification } from '../utils/checkQualification.js';
 
 // post a new job
 export const postJob = async (req, res) => {
@@ -106,34 +107,45 @@ export const updateJob = async (req, res) => {
 
 // apply for a job
 export const applyJob = async (req, res) => {
-    const { userId, jobId } = req.body;
+    const jobId = req.params.jobId;
+    const userId = req.user._id;
 
     try {
-        const job = await Job.findById(jobId);
-        const user = await User.findById(userId);
-        if (!job || !user) {
-            res.status(400).json({ error: "No job or user found" });
+        // ✅ Check qualification
+        const result = await checkUserQualification(userId, jobId);
+
+        if (result.error) {
+            return res.status(404).json({ error: result.error });
         }
 
-        // check if the user has already applied
+        if (!result.qualifies) {
+            return res.status(400).json({
+                message: "You don't qualify for this job. Here are some suggested courses.",
+                suggestions: result.suggestions
+            });
+        }
+
+        const job = await Job.findById(jobId);
+        const user = await User.findById(userId);
+
+        // check if already applied
         const alreadyApplied = job.applicants.includes(userId);
         if (alreadyApplied) {
             return res.status(400).json({ error: 'You have already applied for this job' });
         }
 
-        // add the user to the applicants list
+        // apply
         job.applicants.push(userId);
         await job.save();
 
-        // add the job to the user's applied jobs list
         user.appliedJobs.push(jobId);
         await user.save();
 
-        res.status(200).json({ message: 'Application Successful !' });
+        res.status(200).json({ message: 'Application Successful!' });
 
     } catch (error) {
         console.log(error.message);
-        res.json({ error: error.message }).status(500);
+        res.status(500).json({ error: 'Server error while applying to job.' });
     }
 };
 

@@ -11,7 +11,7 @@ const ResetPassword = () => {
 
     const navigate = useNavigate();
 
-    const BASE_URL = 'https://techposter-backend.onrender.com/api/auth/reset-password';
+    const BASE_URL = `${import.meta.env.VITE_BACKEND_URL}/auth/reset-password`;
 
     const handleResetPassword = async (e) => {
         e.preventDefault();

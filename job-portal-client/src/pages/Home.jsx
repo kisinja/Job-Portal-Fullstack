@@ -1,171 +1,169 @@
-import { useState, useEffect } from 'react';
-import Card from '../components/Card';
-import Banner from '../components/Banner';
-import Jobs from './Jobs';
-import Sidebar from '../sidebar/Sidebar';
-import NewsLetter from '../components/NewsLetter';
-import { useAuthContext } from '../hooks/useAuthContext';
-import Loader from '../components/Loader';
+import { useState, useEffect } from "react";
+import Card from "../components/Card";
+import Banner from "../components/Banner";
+import Jobs from "./Jobs";
+import Sidebar from "../sidebar/Sidebar";
+import NewsLetter from "../components/NewsLetter";
+import { useAuthContext } from "../hooks/useAuthContext";
+import Loader from "../components/Loader";
 
 const Home = () => {
-    const [selectedCategory, setSelectedCategory] = useState(null);
-    const [jobs, setJobs] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 6;
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [query, setQuery] = useState("");
+  const itemsPerPage = 6;
 
-    const BASE_URL = 'https://techposter-backend.onrender.com/api/jobs';
+  const BASE_URL = `${import.meta.env.VITE_BACKEND_URL}/jobs`;
+  const { user } = useAuthContext();
 
-    /* const BASE_URL = 'http://localhost:7777/api/jobs'; */
-
-    const { user } = useAuthContext();
-
-    useEffect(() => {
+  // Fetch jobs
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
         setLoading(true);
+        const res = await fetch(BASE_URL, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user?.token}`,
+          },
+        });
 
-        const fetchJobs = async () => {
-            try {
-                const response = await fetch(BASE_URL, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${user.token}`,
-                    },
-                });
-                const data = await response.json();
-                setJobs(data);
-                console.log(jobs);
-                setLoading(false);
-            } catch (error) {
-                console.error(error);
-            }
-        };
-
-        fetchJobs();
-    }, []);
-
-    const [query, setQuery] = useState("");
-    const handleInputChange = (e) => {
-        setQuery(e.target.value);
-    };
-
-    // filter jobs by title
-    const filteredItems = jobs.filter(job => job.jobTitle.toLowerCase().indexOf(query.toLowerCase()) !== -1);
-
-    /* Radio based filtering */
-    const handleChange = (e) => {
-        setSelectedCategory(e.target.value);
-    };
-
-    /* Button bases filtering */
-    const handleClick = (e) => {
-        setSelectedCategory(e.target.value);
-    };
-
-    /* Calculate the index range */
-    const calculatePageRange = () => {
-
-        const startIndex = (currentPage - 1) * itemsPerPage;
-        const endIndex = startIndex + itemsPerPage;
-
-
-        return { startIndex, endIndex };
-    };
-
-    /* function for the next page */
-    const nextPage = () => {
-        if (currentPage < Math.ceil(filteredItems.length / itemsPerPage)) {
-            setCurrentPage(currentPage + 1);
+        const data = await res.json();
+        if (res.ok) {
+          setJobs(data);
+        } else {
+          console.error(data.error || "Failed to fetch jobs");
         }
+      } catch (err) {
+        console.error("Fetch error:", err.message);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    /* function for the previos page */
-    const previousPage = () => {
-        if (currentPage > 1) {
-            setCurrentPage(currentPage - 1);
-        };
-    };
+    if (user?.token) {
+      fetchJobs();
+    }
+  }, [user]);
 
-    /* Main Functions */
-    const filteredData = (jobs, selected, query) => {
-        let filteredJobs = jobs;
+  const handleInputChange = (e) => setQuery(e.target.value);
+  const handleChange = (e) => setSelectedCategory(e.target.value);
+  const handleClick = (e) => setSelectedCategory(e.target.value);
 
-        // filter input items
-        if (query) {
-            filteredJobs = filteredItems;
-        }
+  const filteredItems = jobs.filter((job) =>
+    job.jobTitle?.toLowerCase().includes(query.toLowerCase())
+  );
 
-        // category based filtering
-        if (selected) {
-            filteredJobs = filteredJobs.filter(({ jobLocation, maxPrice, salaryType, employmentType, createdAt, experienceLevel }) => (
-                (jobLocation && jobLocation.toLowerCase() === selected.toLowerCase()) ||
-                (maxPrice && parseInt(maxPrice) <= parseInt(selected)) ||
-                (createdAt && createdAt >= selected) ||
-                (salaryType && salaryType.toLowerCase() === selected.toLowerCase()) ||
-                (employmentType && employmentType.toLowerCase() === selected.toLowerCase()) ||
-                (experienceLevel && experienceLevel.toLowerCase() === selected.toLowerCase())
-            ));
-            console.log(filteredJobs);
-        }
+  const filteredData = (jobsList, selected, searchQuery) => {
+    let filtered = jobsList;
 
-        // slice the data based on current page
-        const { startIndex, endIndex } = calculatePageRange();
-        filteredJobs = filteredJobs.slice(startIndex, endIndex);
+    if (searchQuery) {
+      filtered = filteredItems;
+    }
 
-        // Return the filtered jobs as a list of Card components
-        return filteredJobs.map((data, i) => (
-            <Card key={i} data={data} />
-        ));
-    };
+    if (selected) {
+      filtered = filtered.filter((job) => {
+        const {
+          jobLocation,
+          maxPrice,
+          salaryType,
+          employmentType,
+          createdAt,
+          experienceLevel,
+        } = job;
 
-    const result = filteredData(jobs, selectedCategory, query);
+        return (
+          (jobLocation &&
+            jobLocation.toLowerCase() === selected.toLowerCase()) ||
+          (maxPrice && parseInt(maxPrice) <= parseInt(selected)) ||
+          (createdAt && createdAt >= selected) ||
+          (salaryType && salaryType.toLowerCase() === selected.toLowerCase()) ||
+          (employmentType &&
+            employmentType.toLowerCase() === selected.toLowerCase()) ||
+          (experienceLevel &&
+            experienceLevel.toLowerCase() === selected.toLowerCase())
+        );
+      });
+    }
 
-    return (
-        <div>
-            <Banner
-                handleInputChange={handleInputChange}
-                query={query}
-            />
+    const start = (currentPage - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    return filtered
+      .slice(start, end)
+      .map((job, index) => <Card key={index} data={job} />);
+  };
 
-            {/* main content */}
-            <div className="bg-[#fafafa] md:grid grid-cols-4 gap-8 lg:px-[60px] px-4 py-12">
-                {/* left side */}
-                <div className="bg-white p-4 rounded">
-                    <Sidebar handleChange={handleChange} handleClick={handleClick} />
-                </div>
+  const nextPage = () => {
+    const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
+    if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
+  };
 
-                {/* job cards */}
-                <div className="col-span-2 bg-white p-2 rounded-sm">
+  const previousPage = () => {
+    if (currentPage > 1) setCurrentPage((prev) => prev - 1);
+  };
 
-                    {
-                        loading ? (
-                            <Loader />
-                        ) : result.length > 0 ? (<Jobs result={result} />) : <>
-                            <h3 className='text-lg font-bold mb-2'>{result.length} Jobs</h3>
-                            <p>No jobs found</p>
-                        </>
-                    }
+  const result = filteredData(jobs, selectedCategory, query);
 
-                    {/* pagination here */}
-                    {
-                        result.length > 0 ? (
-                            <div className='flex justify-center mt-4 space-x-8'>
-                                <button onClick={previousPage} disabled={currentPage === 1} className='hover:underline text-primary/70 cursor-pointer'>Previous</button>
-                                <span className='text-primary'>Page {currentPage} of {Math.ceil(filteredItems.length / itemsPerPage)}</span>
-                                <button onClick={nextPage} disabled={currentPage === Math.ceil(filteredItems.length / itemsPerPage)} className='hover:underline text-primary/70 cursor-pointer'>Next</button>
-                            </div>
-                        ) : ""
-                    }
+  return (
+    <div>
+      <Banner handleInputChange={handleInputChange} query={query} />
 
-                </div>
-
-                {/* right side */}
-                <div className="bg-white p-4 rounded">
-                    <h3 className="font-bold text-2xl text-primary mb-3">Newsletter</h3>
-                    <NewsLetter />
-                </div>
-            </div>
+      <div className="bg-[#fafafa] md:grid grid-cols-4 gap-8 lg:px-[60px] px-4 py-12">
+        {/* Left - Sidebar */}
+        <div className="bg-white p-4 rounded">
+          <Sidebar handleChange={handleChange} handleClick={handleClick} />
         </div>
-    )
-}
 
-export default Home
+        {/* Middle - Job Cards */}
+        <div className="col-span-2 bg-white p-2 rounded-sm">
+          {loading ? (
+            <Loader />
+          ) : result.length > 0 ? (
+            <Jobs result={result} />
+          ) : (
+            <>
+              <h3 className="text-lg font-bold mb-2">0 Jobs</h3>
+              <p>No jobs found</p>
+            </>
+          )}
+
+          {/* Pagination */}
+          {result.length > 0 && (
+            <div className="flex justify-center mt-4 space-x-8">
+              <button
+                onClick={previousPage}
+                disabled={currentPage === 1}
+                className="hover:underline text-primary/70"
+              >
+                Previous
+              </button>
+              <span className="text-primary">
+                Page {currentPage} of{" "}
+                {Math.ceil(filteredItems.length / itemsPerPage)}
+              </span>
+              <button
+                onClick={nextPage}
+                disabled={
+                  currentPage === Math.ceil(filteredItems.length / itemsPerPage)
+                }
+                className="hover:underline text-primary/70"
+              >
+                Next
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Right - Newsletter */}
+        <div className="bg-white p-4 rounded">
+          <h3 className="font-bold text-2xl text-primary mb-3">Newsletter</h3>
+          <NewsLetter />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Home;
