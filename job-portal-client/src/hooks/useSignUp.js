@@ -8,7 +8,7 @@ export const useSignUp = () => {
     const { dispatch } = useAuthContext();
 
 
-    const BASE_URL = `${import.meta.env.VITE_BACKEND_URL}/auth/signup`;
+    const BASE_URL = `https://techposter-backend.onrender.com/api/auth/signup`;
 
     const signUp = async (username, email, password) => {
         setLoading(true);

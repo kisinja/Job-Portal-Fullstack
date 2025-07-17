@@ -9,7 +9,7 @@ export const useLogin = () => {
 
     //const BASE_URL = 'https://techposter-backend.onrender.com/api/auth/login';
 
-    const BASE_URL = `${import.meta.env.VITE_BACKEND_URL}/auth/login`;
+    const BASE_URL = `https://techposter-backend.onrender.com/api/auth/login`;
 
     const login = async (email, password) => {
         setLoading(true);
