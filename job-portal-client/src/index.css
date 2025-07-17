@@ -6,3 +6,9 @@
   background: blue;
   color: white;
 }
+
+.form-text {
+  color: blue;
+  font-size: 13px;
+  text-decoration: underline;
+}

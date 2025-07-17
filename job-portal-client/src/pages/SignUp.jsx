@@ -61,7 +61,7 @@ const SignUp = () => {
                 </div>
 
                 <p className="text-sm text-primary">
-                    Already have an account? <a href="/login" className="text-blue">Login</a>
+                    Already have an account? <a href="/login" className="form-text">Login</a>
                 </p>
 
                 {error && <div className="error">{error}</div>}

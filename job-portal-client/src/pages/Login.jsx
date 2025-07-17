@@ -56,10 +56,10 @@ const Login = () => {
                 </div>
 
                 <p className="text-sm text-primary">Don{"'"}t have an account ?
-                    <a href="/signup" className="text-blue">Sign Up</a>
+                    <a href="/signup" className="form-text">Sign Up</a>
                 </p>
 
-                <a className="text-sm text-blue block" href="/forgot-password">
+                <a className="text-sm form-text block" href="/forgot-password">
                     Forgot your password ?
                 </a>
 
