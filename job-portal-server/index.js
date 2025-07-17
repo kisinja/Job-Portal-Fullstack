@@ -12,11 +12,10 @@ dotenv.config();
 
 app.use(cors({
     origin: ["http://localhost:5173", "http://localhost:3000", 'https://techposter-frontend.onrender.com'],
-},
-    {
-        methods: ["GET", "POST", "PUT", "DELETE"],
-    }
-));
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true, // only if you're using cookies
+}));
+
 app.use(morgan("common"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
