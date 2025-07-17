@@ -1,76 +1,133 @@
 import { useState } from "react";
 import { useLogin } from "../hooks/useLogin";
 import FlashMessage from "../components/FlashMessage";
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
 
 const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [flashMessage, setFlashMessage] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const { login, error, loading } = useLogin();
 
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await login(email, password);
+    setFlashMessage(error);
+  };
 
-    const [flashMessage, setFlashMessage] = useState('');
+  const clearMessage = () => {
+    setFlashMessage("");
+  };
 
-    const { login, error, loading } = useLogin();
+  return (
+    <div className="login-container">
+      <div className="login-left-panel">
+        <div className="login-branding">
+          <h1>TechPoster</h1>
+          <h2>Connecting Tech Talent with Opportunities</h2>
+          <div className="login-features">
+            <div className="feature-item">
+              <span className="feature-icon">💼</span>
+              <span>Find your dream tech job</span>
+            </div>
+            <div className="feature-item">
+              <span className="feature-icon">👥</span>
+              <span>Connect with top recruiters</span>
+            </div>
+            <div className="feature-item">
+              <span className="feature-icon">🚀</span>
+              <span>Accelerate your career</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+      <div className="login-right-panel">
+        <form onSubmit={handleSubmit} className="login-form">
+          <div className="form-header">
+            <h1>Welcome Back</h1>
+            <p>Sign in to access your TechPoster account</p>
+          </div>
 
-        await login(email, password);
+          <FlashMessage message={flashMessage} clearMessage={clearMessage} />
 
-        setFlashMessage(error);
-    };
+          <div className="form-group">
+            <label htmlFor="email">Email Address</label>
+            <input
+              type="email"
+              autoComplete="off"
+              name="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email"
+            />
+          </div>
 
-    const clearMessage = () => {
-        setFlashMessage('');
-    };
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                autoComplete="off"
+                name="password"
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Create a password"
+              />
+              {showPassword ? (
+                <FaRegEyeSlash
+                  className="absolute right-2 top-4 cursor-pointer text-gray-400 text-lg"
+                  title="Hide password"
+                  onClick={() => setShowPassword(!showPassword)}
+                />
+              ) : (
+                <FaRegEye
+                  className="absolute right-2 top-4 cursor-pointer text-gray-400 text-lg"
+                  title="Show password"
+                  onClick={() => setShowPassword(!showPassword)}
+                />
+              )}
+            </div>
+          </div>
 
+          <div className="form-options">
+            <div className="remember-me">
+              <input type="checkbox" id="remember" />
+              <label htmlFor="remember">Remember me</label>
+            </div>
+            <a href="/forgot-password" className="forgot-password">
+              Forgot password?
+            </a>
+          </div>
 
-    return (
-        <section id="login-page">
+          {error && <div className="error-message">{error}</div>}
 
-            <FlashMessage message={flashMessage} clearMessage={clearMessage} />
+          <button type="submit" className="submit-button" disabled={loading}>
+            {loading ? <span className="button-loader"></span> : "Sign In"}
+          </button>
 
-            <form onSubmit={handleSubmit} className="bg-white py-8 px-12 min-w-screen-lg">
-                <h1 className="text-3xl mb-3">Login</h1>
-                <div className="flex flex-col mb-3">
-                    <label htmlFor="email">Email</label>
-                    <input
-                        type="email"
-                        autoComplete="off"
-                        name="email" id="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="border-2 rounded-md p-1 outline-none w-full"
-                    />
-                </div>
-                <div className="flex flex-col mb-3">
-                    <label htmlFor="password">Password</label>
-                    <input
-                        type="password"
-                        autoComplete="off"
-                        name="password"
-                        id="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="border-2 rounded-md p-1 focus:outline-none w-full"
-                    />
-                </div>
+          <div className="form-footer">
+            Don&apos;t have an account? <a href="/signup">Sign up</a>
+          </div>
 
-                <p className="text-sm text-primary">Don{"'"}t have an account ?
-                    <a href="/signup" className="form-text">Sign Up</a>
-                </p>
+          <div className="social-login">
+            <div className="divider">Or continue with</div>
+            <div className="social-buttons">
+              <button type="button" className="social-button google">
+                <span className="social-icon">G</span> Google
+              </button>
+              <button type="button" className="social-button linkedin">
+                <span className="social-icon">in</span> LinkedIn
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
 
-                <a className="text-sm form-text block" href="/forgot-password">
-                    Forgot your password ?
-                </a>
-
-                {error && <div className="error">{error}</div>}
-
-                <button type="submit" className="mx-auto py-2 px-5 rounded-md flex justify-center items-center mt-3" id="auth-btn">
-                    {loading ? "Loading..." : "Login"}
-                </button>
-            </form>
-        </section>
-    )
-}
-
-export default Login
+export default Login;

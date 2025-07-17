@@ -15,32 +15,35 @@ export const useLogin = () => {
         setLoading(true);
         setError(null);
 
-        const res = await fetch(BASE_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ email, password })
-        });
+        try {
+            const res = await fetch(BASE_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password })
+            });
 
-        const data = await res.json();
+            const data = await res.json();
 
-        if (!res.ok) {
-            setError(data.error);
-            setLoading(false);
-            return;
+            if (!res.ok) {
+                setError(data.error);
+                return;
+            }
+
+            if (res.ok) {
+                // save the user to local storage
+                localStorage.setItem('user', JSON.stringify(data));
+
+                // set the user in the context
+                dispatch({ type: 'LOGIN', payload: data });
+            }
         }
-
-        if (res.ok) {
-            // save the user to local storage
-            localStorage.setItem('user', JSON.stringify(data));
-
-            // set the user in the context
-            dispatch({ type: 'LOGIN', payload: data });
-
+        catch (error) {
+            console.log("Error logging in: ", error.message);
+        } finally {
             setLoading(false);
         }
-    };
-
+    }
     return { error, loading, login };
-};
+}

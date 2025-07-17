@@ -1,77 +1,140 @@
 import { useState } from "react";
-import { useSignUp } from '../hooks/useSignUp';
+import { useSignUp } from "../hooks/useSignUp";
 import { useNavigate } from "react-router-dom";
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
 
 const SignUp = () => {
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-    const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
-    const { error, loading, signUp } = useSignUp();
+  const { error, loading, signUp } = useSignUp();
+  const navigate = useNavigate();
 
-    const navigate = useNavigate();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await signUp(username, email, password);
+    navigate("/login");
+    setUsername("");
+    setEmail("");
+    setPassword("");
+  };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+  return (
+    <div className="signup-container">
+      <div className="signup-left-panel">
+        <div className="signup-branding">
+          <h1>TechPoster</h1>
+          <h2>Your Gateway to Tech Opportunities</h2>
+          <div className="signup-features">
+            <div className="feature-item">
+              <span className="feature-icon">🔍</span>
+              <span>Discover your perfect tech role</span>
+            </div>
+            <div className="feature-item">
+              <span className="feature-icon">📈</span>
+              <span>Grow your professional network</span>
+            </div>
+            <div className="feature-item">
+              <span className="feature-icon">💡</span>
+              <span>Showcase your skills to employers</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
-        await signUp(username, email, password);
+      <div className="signup-right-panel">
+        <form onSubmit={handleSubmit} className="signup-form">
+          <div className="form-header">
+            <h1>Create Your Account</h1>
+            <p>Join TechPoster to access thousands of tech opportunities</p>
+          </div>
 
-        navigate('/login');
+          <div className="form-group">
+            <label htmlFor="username">Username</label>
+            <input
+              type="text"
+              autoComplete="off"
+              name="username"
+              id="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Choose a username"
+            />
+          </div>
 
-        setUsername('');
-        setEmail('');
-        setPassword('');
-    };
+          <div className="form-group">
+            <label htmlFor="email">Email Address</label>
+            <input
+              type="email"
+              autoComplete="off"
+              name="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email"
+            />
+          </div>
 
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                autoComplete="off"
+                name="password"
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Create a password"
+              />
+              {showPassword ? (
+                <FaRegEyeSlash
+                  className="absolute right-2 top-4 cursor-pointer text-gray-400 text-lg"
+                  title="Hide password"
+                  onClick={() => setShowPassword(!showPassword)}
+                />
+              ) : (
+                <FaRegEye
+                  className="absolute right-2 top-4 cursor-pointer text-gray-400 text-lg"
+                  title="Show password"
+                  onClick={() => setShowPassword(!showPassword)}
+                />
+              )}
+            </div>
+          </div>
 
-    return (
-        <section id="signup-page">
-            <form onSubmit={handleSubmit} className="bg-white py-8 px-12 min-w-screen-lg">
-                <h1 className="text-3xl mb-2">Sign Up</h1>
-                <div className="flex flex-col mb-3">
-                    <label htmlFor="name" className="text-base text-primary">Username</label>
-                    <input
-                        type="text"
-                        autoComplete="off" name="username" id="username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        className="border-2 rounded-md p-1 outline-none w-full"
-                    />
-                </div>
-                <div className="flex flex-col mb-3">
-                    <label htmlFor="email">Email</label>
-                    <input
-                        type="email"
-                        autoComplete="off" name="email" id="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="border-2 rounded-md p-1 outline-none w-full"
-                    />
-                </div>
-                <div className="flex flex-col mb-3">
-                    <label htmlFor="password">Password</label>
-                    <input
-                        type="password"
-                        autoComplete="off" name="password" id="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="border-2 rounded-md p-1 outline-none w-full"
-                    />
-                </div>
+          {error && <div className="error-message">{error}</div>}
 
-                <p className="text-sm text-primary">
-                    Already have an account? <a href="/login" className="form-text">Login</a>
-                </p>
+          <button type="submit" className="submit-button" disabled={loading}>
+            {loading ? (
+              <span className="button-loader"></span>
+            ) : (
+              "Create Account"
+            )}
+          </button>
 
-                {error && <div className="error">{error}</div>}
+          <div className="form-footer">
+            Already have an account? <a href="/login">Log in</a>
+          </div>
 
-                <button type="submit" className="mx-auto py-2 px-5 rounded-md flex justify-center items-center mt-3" id="auth-btn">
-                    {loading ? "Loading..." : "Sign Up"}
-                </button>
-            </form>
-        </section>
-    );
+          <div className="social-signup">
+            <div className="divider">Or sign up with</div>
+            <div className="social-buttons">
+              <button type="button" className="social-button google">
+                <span className="social-icon">G</span> Google
+              </button>
+              <button type="button" className="social-button linkedin">
+                <span className="social-icon">in</span> LinkedIn
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
 };
 
-export default SignUp
+export default SignUp;
