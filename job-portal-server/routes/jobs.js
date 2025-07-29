@@ -11,7 +11,7 @@ import { checkQualificationMiddleware } from '../middleware/checkQualificationMi
 /* router.use(requireAuth); */
 
 // get all jobs
-router.get('/', requireAuth, getJobs);
+router.get('/', getJobs);
 
 // post a new job
 router.post('/', requireAuth, postJob);
