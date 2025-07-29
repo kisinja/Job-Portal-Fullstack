@@ -27,8 +27,10 @@ export const suggestCourses = async (req, res) => {
     const userSkills = Array.isArray(user.userSkills) ? user.userSkills : [];
 
     const missingSkills = jobSkills.filter(
-      (skill) => !userSkills.includes(skill)
+      (skill) => !userSkills.includes(skill.toLowerCase())
     );
+
+    console.log(missingSkills);
 
     if (missingSkills.length === 0) {
       // Check if user already applied
@@ -38,40 +40,38 @@ export const suggestCourses = async (req, res) => {
         await job.save();
       }
 
-      return res
-        .status(200)
-        .json({
-          message:
-            "You qualify for this job and your application has been submitted!",
-        });
+      return res.status(200).json({
+        message:
+          "You qualify for this job and your application has been submitted!",
+      });
+    } else {
+      // If missing skills exist, use GPT to suggest learning resources
+      const chatModel = new ChatOpenAI({
+        apiKey: API_KEY,
+        temperature: 0.7,
+        model: "gpt-4",
+      });
+
+      const messages = [
+        new SystemMessage(
+          "You are a helpful assistant that recommends online courses for developers to improve their skills."
+        ),
+        new HumanMessage(
+          `Suggest beginner to intermediate-level online courses or tutorials for the following skills: ${missingSkills.join(
+            ", "
+          )}. Provide clickable links where possible.`
+        ),
+      ];
+
+      const response = await chatModel.invoke(messages);
+      console.log("LLM Response:", response.content);
+
+      res.status(200).json({
+        message: "You do not meet all the skill requirements for this job.",
+        missingSkills,
+        suggestions: response.content,
+      });
     }
-
-    // If missing skills exist, use GPT to suggest learning resources
-    const chatModel = new ChatOpenAI({
-      apiKey: API_KEY,
-      temperature: 0.7,
-      model: "gpt-4",
-    });
-
-    const messages = [
-      new SystemMessage(
-        "You are a helpful assistant that recommends online courses for developers to improve their skills."
-      ),
-      new HumanMessage(
-        `Suggest beginner to intermediate-level online courses or tutorials for the following skills: ${missingSkills.join(
-          ", "
-        )}. Provide clickable links where possible.`
-      ),
-    ];
-
-    const response = await chatModel.invoke(messages);
-    console.log("LLM Response:", response.content);
-
-    res.status(200).json({
-      message: "You do not meet all the skill requirements for this job.",
-      missingSkills,
-      suggestions: response.content,
-    });
   } catch (error) {
     console.error("Error in suggestCourses:", error);
     res.status(500).json({ error: "Internal server error." });

@@ -8,8 +8,9 @@ const JobDetails = () => {
   const { user } = useAuthContext();
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [err, setErr] = useState(null);
+  const [error, setError] = useState(null);
   const [message, setMessage] = useState(null);
+  const [missingSkills, setMissingSkills] = useState([]);
   const [suggestedCourses, setSuggestedCourses] = useState([]);
 
   const JOB_DETAILS_URL = `${import.meta.env.VITE_BACKEND_URL}/jobs/${id}`;
@@ -23,8 +24,9 @@ const JobDetails = () => {
 
   const handleApply = async () => {
     setLoading(true);
-    setErr(null);
+    setError(null);
     setMessage(null);
+    setMissingSkills([]);
     setSuggestedCourses([]);
 
     try {
@@ -41,27 +43,31 @@ const JobDetails = () => {
       if (response.ok) {
         setMessage(data.message);
       } else {
-        if (Array.isArray(data.suggestions)) {
-          // suggestions is an array of { course, courseLink }
-          setSuggestedCourses(data.suggestions);
-        } else {
-          setErr(
-            data.message || data.error || "You do not qualify for this job."
-          );
+        if (data.missingSkills) {
+          setMissingSkills(data.missingSkills);
         }
+        if (data.suggestions) {
+          try {
+            const parsedSuggestions = JSON.parse(data.suggestions);
+            setSuggestedCourses(parsedSuggestions);
+          } catch (e) {
+            console.error("Failed to parse suggestions:", e);
+          }
+        }
+        setError(data.message || "You do not qualify for this job.");
       }
     } catch (error) {
-      console.log(error.message);
-      setErr("Failed to apply for the job.");
+      console.error(error.message);
+      setError("Failed to apply for the job.");
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   useEffect(() => {
     const fetchJob = async () => {
       setLoading(true);
-      setErr(null);
+      setError(null);
 
       try {
         const response = await fetch(JOB_DETAILS_URL, {
@@ -76,11 +82,11 @@ const JobDetails = () => {
         if (response.ok) {
           setJob(data);
         } else {
-          setErr(data.error || "Job not found.");
+          setError(data.error || "Job not found.");
         }
       } catch (error) {
         console.error(error.message);
-        setErr("Failed to load job details.");
+        setError("Failed to load job details.");
       } finally {
         setLoading(false);
       }
@@ -92,25 +98,19 @@ const JobDetails = () => {
   }, [user?.token, JOB_DETAILS_URL]);
 
   if (loading && !job) return <Loader />;
-  if (err && !job)
-    return <div className="text-center text-red-600 mt-10">{err}</div>;
-
-  console.log(job);
+  if (error && !job) return <div className="text-center text-red-600 mt-10">{error}</div>;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6 md:p-12 overflow-hidden">
-      {/* Header with decorative elements */}
       <div className="max-w-7xl mx-auto relative">
         <div className="absolute -top-10 -left-10 w-32 h-32 bg-blue-100 rounded-full opacity-20 mix-blend-multiply filter blur-xl"></div>
         <div className="absolute -bottom-20 -right-20 w-48 h-48 bg-purple-100 rounded-full opacity-20 mix-blend-multiply filter blur-xl"></div>
 
-        {/* Main job card */}
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 transform transition-all hover:shadow-2xl">
-          {/* Job header with gradient */}
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 md:p-8 ">
+          <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 md:p-8">
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between">
               <div className="flex items-center mb-4 md:mb-0">
-                <div className=" p-1 rounded-lg shadow-md mr-6 flex-shrink-0">
+                <div className="p-1 rounded-lg shadow-md mr-6 flex-shrink-0">
                   <img
                     src={job?.companyLogo || "/default-logo.png"}
                     alt={job?.companyName || "Company Logo"}
@@ -132,10 +132,8 @@ const JobDetails = () => {
             </div>
           </div>
 
-          {/* Job content */}
           <div className="p-6 md:p-8">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Main content */}
               <div className="lg:col-span-2">
                 <div className="mb-8">
                   <h3 className="text-2xl font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200 flex items-center">
@@ -207,9 +205,7 @@ const JobDetails = () => {
                 )}
               </div>
 
-              {/* Sidebar */}
               <div className="space-y-6">
-                {/* Skills */}
                 <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
                   <h3 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
                     <svg
@@ -240,7 +236,6 @@ const JobDetails = () => {
                   </div>
                 </div>
 
-                {/* Details */}
                 <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
                   <h3 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
                     <svg
@@ -291,8 +286,7 @@ const JobDetails = () => {
               </div>
             </div>
 
-            {/* Messages and suggestions */}
-            <div className="mt-8 space-y-6">
+            <div className="mt-10 space-y-6">
               {message && (
                 <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-green-700 flex items-start">
                   <svg
@@ -313,7 +307,7 @@ const JobDetails = () => {
                 </div>
               )}
 
-              {err && (
+              {error && (
                 <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700 flex items-start">
                   <svg
                     className="w-5 h-5 mr-2 text-red-500 mt-0.5"
@@ -329,7 +323,39 @@ const JobDetails = () => {
                       d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                     />
                   </svg>
-                  {err}
+                  {error}
+                </div>
+              )}
+
+              {missingSkills.length > 0 && (
+                <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-6">
+                  <h3 className="text-xl font-semibold text-gray-800 mb-3 flex items-center">
+                    <svg
+                      className="w-5 h-5 text-yellow-500 mr-2"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                      />
+                    </svg>
+                    Missing Required Skills
+                  </h3>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {missingSkills.map((skill, index) => (
+                      <span
+                        key={index}
+                        className="bg-white px-3 py-1 rounded-full text-sm font-medium text-yellow-600 border border-yellow-200 shadow-sm"
+                      >
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               )}
 
@@ -386,7 +412,6 @@ const JobDetails = () => {
               )}
             </div>
 
-            {/* Apply button */}
             <div className="mt-10 text-center">
               <button
                 onClick={handleApply}
