@@ -11,9 +11,9 @@ const Footer = () => {
                     <div className="flex flex-col gap-3">
                         <h3 className="text-gray-50 underline">Useful Links</h3>
                         <ul className="flex flex-col gap-2">
-                            <li className="text-sm hover:text-blue cursor-pointer">Careers</li>
-                            <li className="text-sm hover:text-blue cursor-pointer">Customer Care</li>
-                            <li className="text-sm hover:text-blue cursor-pointer">
+                            <li className="text-sm hover:text-[#3575E2] cursor-pointer">Careers</li>
+                            <li className="text-sm hover:text-[#3575E2] cursor-pointer">Customer Care</li>
+                            <li className="text-sm hover:text-[#3575E2] cursor-pointer">
                                 <a href="/privacy-policy">Privacy Policy</a>
                             </li>
                         </ul>
@@ -22,19 +22,19 @@ const Footer = () => {
                     <div className="flex flex-col gap-3">
                         <h3 className="text-gray-50 underline">Follow Us</h3>
                         <ul className="flex gap-2">
-                            <li className="text-lg hover:text-blue cursor-pointer">
+                            <li className="text-lg hover:text-[#3575E2] cursor-pointer">
                                 <FaInstagram />
                             </li>
-                            <li className="text-lg hover:text-blue cursor-pointer">
+                            <li className="text-lg hover:text-[#3575E2] cursor-pointer">
                                 <FaLinkedin />
                             </li>
-                            <li className="text-lg hover:text-blue cursor-pointer">
+                            <li className="text-lg hover:text-[#3575E2] cursor-pointer">
                                 <FaGithub />
                             </li>
-                            <li className="text-lg hover:text-blue cursor-pointer">
+                            <li className="text-lg hover:text-[#3575E2] cursor-pointer">
                                 <FaXTwitter />
                             </li>
-                            <li className="text-lg hover:text-blue cursor-pointer">
+                            <li className="text-lg hover:text-[#3575E2] cursor-pointer">
                                 <FaPinterest />
                             </li>
                         </ul>

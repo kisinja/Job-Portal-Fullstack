@@ -241,7 +241,7 @@ const PostJob = () => {
                     </div>}
 
                     {/* submit input */}
-                    <input type="submit" className='block mt-12 bg-blue text-white font-semibold px-8 py-2 rounded-sm cursor-pointer' value={loading ? "Loading..." : "Post Job"} />
+                    <input type="submit" className='block mt-12 bg-blue-500 text-white font-semibold px-8 py-2 rounded-sm cursor-pointer' value={loading ? "Loading..." : "Post Job"} />
                 </form>
             </div>
         </div>

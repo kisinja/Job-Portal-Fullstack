@@ -7,9 +7,9 @@ export const useSignUp = () => {
 
   const { dispatch } = useAuthContext();
 
-  const BASE_URL = `http://localhost:7777/api/auth/signup`;
+  const BASE_URL = `${import.meta.env.VITE_BACKEND_URL}/auth/signup`;
 
-  const signUp = async (username, email, password) => {
+  const signUp = async (username, email, password, role) => {
     setLoading(true);
     setError(null);
 
@@ -19,7 +19,7 @@ export const useSignUp = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username, email, password }),
+        body: JSON.stringify({ username, email, password,role }),
       });
 
       const data = await res.json();

@@ -5,7 +5,7 @@ const GetNoticed = () => {
     return (
         <div className="w-full bg-white p-4 rounded shadow flex flex-col gap-3">
             <h3 className="text-lg font-bold text-primary flex items-center gap-2">
-                <FaRocket className="text-blue text-xl" />
+                <FaRocket className="text-[#3575E2] text-xl" />
                 Get noticed faster
             </h3>
             <p className="text-primary/70 text-sm">
@@ -13,7 +13,7 @@ const GetNoticed = () => {
             </p>
 
 
-            <button type="submit" className="bg-blue text-white py-2 px-5 rounded-md focus:bg-orange-50 focus:text-black focus:ring-4 focus:ring-blue focus:outline-none">
+            <button type="submit" className="bg-[#3575E2] text-white py-2 px-5 rounded-md focus:bg-orange-50 focus:text-black focus:ring-4 focus:ring-[#3575E2] focus:outline-none">
                 <Link to="/generate-resume">
                     Try it Now
                 </Link>

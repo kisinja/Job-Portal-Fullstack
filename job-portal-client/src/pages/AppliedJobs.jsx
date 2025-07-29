@@ -70,7 +70,7 @@ const AppliedJobs = () => {
               className="mb-4 p-4 border border-gray-200 rounded-lg flex justify-between"
             >
               <div className="flex flex-col gap-2">
-                <h3 className="text-lg font-light text-blue">{job.jobTitle}</h3>
+                <h3 className="text-lg font-light text-[#3575E2]">{job.jobTitle}</h3>
                 <p className="text-gray-700">{job.companyName}</p>
                 <p className="text-primary/70">
                   <strong>Salary:</strong>${job.minPrice} - ${job.maxPrice}k (

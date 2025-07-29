@@ -1,184 +1,267 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { FaBarsStaggered as FaBar, FaXmark } from "react-icons/fa6";
 import { useAuthContext } from "../hooks/useAuthContext";
 import { IoLogOutOutline } from "react-icons/io5";
+import { MdDashboard, MdWork, MdSearch, MdAttachMoney } from "react-icons/md";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+  const [scrolled, setScrolled] = useState(false);
   const { user } = useAuthContext();
+
+  // Handle scroll effect for navbar
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 10) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const handleMenuToggler = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const navItems = [
+  const handleClick = () => {
+    localStorage.removeItem("user");
+    window.location.href = "/";
+  };
+
+  // Common nav items for all users
+  const commonNavItems = [
     {
-      title: "Start a Search",
+      title: "Job Search",
       path: "/",
+      icon: <MdSearch className="text-lg" />,
     },
     {
       title: "Salary Estimate",
       path: "/salary",
-    },
-    {
-      title: "Post a Job",
-      path: "/post-job",
+      icon: <MdAttachMoney className="text-lg" />,
     },
   ];
 
-  const handleClick = () => {
-    localStorage.removeItem("user");
+  // Role-specific nav items
+  const roleBasedNavItems = {
+    "job-seeker": [
+      {
+        title: "My Applications",
+        path: `/my-jobs/${user?._id}`,
+        icon: <MdWork className="text-lg" />,
+      },
+    ],
+    employer: [
+      {
+        title: "Post a Job",
+        path: "/post-job",
+        icon: <MdWork className="text-lg" />,
+      },
+      {
+        title: "My Jobs",
+        path: `/my-jobs/${user?._id}`,
+        icon: <MdDashboard className="text-lg" />,
+      },
+    ],
+    admin: [
+      {
+        title: "Dashboard",
+        path: "/admin",
+        icon: <MdDashboard className="text-lg" />,
+      },
+    ],
+  };
 
-    window.location.href = "/";
+  // Combine nav items based on role
+  const getNavItems = () => {
+    if (!user) return commonNavItems;
+    return [...commonNavItems, ...(roleBasedNavItems[user.role] || [])];
   };
 
   return (
-    <header className="max-w-screen-2xl container mx-auto xl:px-24 px-4 shadow-sm">
-      <nav className="flex justify-between items-center py-6">
-        <a
-          href="/"
-          className="flex items-center gap-2 text-2xl text-black"
-          id="logo"
-        >
-          <svg
-            width="29"
-            height="30"
-            viewBox="0 0 29 30"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
+    <header
+      className={`fixed w-full z-50 transition-all duration-300 ${
+        scrolled
+          ? "bg-white/90 backdrop-blur-md shadow-sm"
+          : "bg-white/90 backdrop-blur-md"
+      }`}
+    >
+      <nav className="max-w-screen-2xl container mx-auto xl:px-24 px-4">
+        <div className="flex justify-between items-center py-4">
+          {/* Logo */}
+          <Link
+            to="/"
+            className="flex items-center gap-2 text-2xl font-bold text-blue-600"
           >
-            <circle
-              cx="12.0143"
-              cy="12.5143"
-              r="12.0143"
-              fill="#3575E2"
-              fillOpacity="0.4"
-            />
-            <circle cx="16.9857" cy="17.4857" r="12.0143" fill="#3575E2" />
-          </svg>
-          <span>TechPoster</span>
-        </a>
+            <div className="relative">
+              <div className="w-8 h-8 rounded-full bg-blue-500/20 absolute -left-1 -top-1"></div>
+              <div className="w-8 h-8 rounded-full bg-blue-600 relative z-10 flex items-center justify-center">
+              </div>
+            </div>
+            <span className="hidden sm:inline-block">TechPoster</span>
+          </Link>
 
-        {/* Nav items for large devices */}
-        <ul className="hidden md:flex gap-12">
-          {navItems.map(({ path, title }) => (
-            <li key={path} className="text-base text-primary">
-              <NavLink
-                to={path}
-                className={({ isActive }) => (isActive ? "active" : "")}
-              >
-                {title}
-              </NavLink>
-            </li>
-          ))}
-        </ul>
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center gap-8">
+            <ul className="flex gap-6">
+              {getNavItems().map(({ path, title, icon }) => (
+                <li key={path}>
+                  <NavLink
+                    to={path}
+                    className={({ isActive }) =>
+                      `flex items-center gap-1 font-medium px-3 py-2 rounded-lg transition-colors ${
+                        isActive
+                          ? "text-blue-600 bg-blue-50"
+                          : "text-gray-700 hover:text-blue-600 hover:bg-blue-50"
+                      }`
+                    }
+                  >
+                    {icon}
+                    {title}
+                  </NavLink>
+                </li>
+              ))}
+            </ul>
 
-        {/* Signup and login buttons */}
-        <div className="text-base font-medium space-x-5 hidden lg:block">
-          {user ? (
-            <div className="flex items-center gap-3">
-              <Link to={`/my-jobs/${user._id}`}>My Jobs</Link>
-              <Link
-                to={`/profile/${user._id}`}
-                className="py-2 px-5 text-base text-primary flex items-center gap-2"
-              >
+            {/* User Actions */}
+            <div className="flex items-center gap-4 ml-4">
+              {user ? (
+                <>
+                  <div className="relative group">
+                    <Link
+                      to={`/profile/${user._id}`}
+                      className="flex items-center gap-2"
+                    >
+                      <img
+                        src={user.profilePic}
+                        alt={user.username}
+                        className="w-10 h-10 rounded-full border-2 border-blue-200 hover:border-blue-400 transition-all"
+                      />
+                      <span className="font-medium text-gray-700 hidden lg:inline-block">
+                        {user.username}
+                      </span>
+                    </Link>
+                  </div>
+                  <button
+                    onClick={handleClick}
+                    className="p-2 rounded-full hover:bg-gray-100 text-gray-600 hover:text-red-500 transition-colors"
+                    title="Sign out"
+                  >
+                    <IoLogOutOutline className="text-xl" />
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/login"
+                    className="px-4 py-2 font-medium text-gray-700 hover:text-blue-600 transition-colors"
+                  >
+                    Log In
+                  </Link>
+                  <Link
+                    to="/signup"
+                    className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-medium rounded-lg shadow-sm hover:shadow-md transition-all"
+                  >
+                    Sign Up
+                  </Link>
+                </>
+              )}
+            </div>
+          </div>
+
+          {/* Mobile Menu Button */}
+          <div className="md:hidden flex items-center gap-4">
+            {user && (
+              <Link to={`/profile/${user._id}`} className="flex items-center">
                 <img
                   src={user.profilePic}
-                  alt="dp"
-                  className="w-12 h-12 rounded-full border-4 border-blue"
+                  alt={user.username}
+                  className="w-8 h-8 rounded-full border border-blue-200"
                 />
-
-                <span>{user.username}</span>
               </Link>
-              <Link
-                to=""
-                className="py-2 px-5 text-red-600 text-base"
-                onClick={handleClick}
-              >
-                <IoLogOutOutline className="text-2xl" title="Sign out" />
-              </Link>
-            </div>
-          ) : (
-            <>
-              <Link to="/login" className="py-2 px-5 border rounded">
-                Log In
-              </Link>
-              <Link
-                to="/signup"
-                className="py-2 px-5 border rounded bg-blue text-white"
-              >
-                Sign up
-              </Link>
-            </>
-          )}
+            )}
+            <button
+              onClick={handleMenuToggler}
+              className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            >
+              {isMenuOpen ? (
+                <FaXmark className="w-5 h-5 text-gray-700" />
+              ) : (
+                <FaBar className="w-5 h-5 text-gray-700" />
+              )}
+            </button>
+          </div>
         </div>
 
-        {/* mobile menu */}
-        <div className="md:hidden block">
-          <button onClick={handleMenuToggler}>
-            {isMenuOpen ? (
-              <FaXmark className="w-5 h-5 text-primary" />
-            ) : (
-              <FaBar className="w-5 h-5 text-primary" />
-            )}
-          </button>
+        {/* Mobile Menu */}
+        <div
+          className={`md:hidden transition-all duration-300 overflow-hidden ${
+            isMenuOpen ? "max-h-screen py-4" : "max-h-0 py-0"
+          }`}
+        >
+          <div className="bg-white rounded-xl shadow-xl p-4 border border-gray-100">
+            <ul className="space-y-2">
+              {getNavItems().map(({ path, title, icon }) => (
+                <li key={path}>
+                  <NavLink
+                    to={path}
+                    onClick={handleMenuToggler}
+                    className={({ isActive }) =>
+                      `flex items-center gap-3 px-4 py-3 rounded-lg font-medium ${
+                        isActive
+                          ? "bg-blue-50 text-blue-600"
+                          : "text-gray-700 hover:bg-gray-50"
+                      }`
+                    }
+                  >
+                    {icon}
+                    {title}
+                  </NavLink>
+                </li>
+              ))}
+              {user ? (
+                <li>
+                  <button
+                    onClick={() => {
+                      handleClick();
+                      handleMenuToggler();
+                    }}
+                    className="flex items-center gap-3 w-full px-4 py-3 rounded-lg font-medium text-red-500 hover:bg-red-50"
+                  >
+                    <IoLogOutOutline className="text-xl" />
+                    Sign Out
+                  </button>
+                </li>
+              ) : (
+                <>
+                  <li>
+                    <Link
+                      to="/login"
+                      onClick={handleMenuToggler}
+                      className="flex items-center gap-3 px-4 py-3 rounded-lg font-medium text-gray-700 hover:bg-gray-50"
+                    >
+                      Log In
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/signup"
+                      onClick={handleMenuToggler}
+                      className="flex items-center gap-3 px-4 py-3 rounded-lg font-medium text-white bg-gradient-to-r from-blue-500 to-blue-600"
+                    >
+                      Sign Up
+                    </Link>
+                  </li>
+                </>
+              )}
+            </ul>
+          </div>
         </div>
       </nav>
-
-      {/* Nav items for mobile devices */}
-      <div
-        className={`px-4 bg-black py-5 rounded-sm ${
-          isMenuOpen ? "" : "hidden"
-        }`}
-      >
-        <ul className="">
-          {navItems.map(({ path, title }) => (
-            <li
-              key={path}
-              className="text-base text-white first:text-white py-1"
-            >
-              <NavLink
-                to={path}
-                className={({ isActive }) => (isActive ? "active" : "")}
-                onClick={handleMenuToggler}
-              >
-                {title}
-              </NavLink>
-            </li>
-          ))}
-          {user ? (
-            <>
-              <li>
-                <Link to={`/my-jobs/${user._id}`} className="text-white">
-                  My Jobs
-                </Link>
-              </li>
-              <li className="text-gray-500">Hi, {user.username}</li>
-              <li>
-                <Link to={`/profile/${user._id}`} className="text-white">
-                  Profile
-                </Link>
-              </li>
-              <li>
-                <Link to="" className=" text-white" onClick={handleClick}>
-                  Log out
-                </Link>
-              </li>
-            </>
-          ) : (
-            <>
-              <Link to="/login" className="">
-                Log In
-              </Link>
-              <Link to="/signup" className="text-white">
-                Sign up
-              </Link>
-            </>
-          )}
-        </ul>
-      </div>
     </header>
   );
 };

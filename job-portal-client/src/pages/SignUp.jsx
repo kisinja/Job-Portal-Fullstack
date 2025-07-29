@@ -7,6 +7,7 @@ const SignUp = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState("job-seeker");
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -15,7 +16,7 @@ const SignUp = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await signUp(username, email, password);
+    await signUp(username, email, password, role);
     navigate("/login");
     setUsername("");
     setEmail("");
@@ -76,6 +77,20 @@ const SignUp = () => {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
             />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="role">Role</label>
+            <select
+              name="role"
+              id="role"
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              className="border border-gray-200 focus:border-blue-500 focus:ring-blue-500 p-2 w-full rounded-md text-gray-400"
+            >
+              <option value="job-seeker">Job Seeker</option>
+              <option value="employer">Employer</option>
+            </select>
           </div>
 
           <div className="form-group">

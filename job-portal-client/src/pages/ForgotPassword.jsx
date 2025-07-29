@@ -74,7 +74,7 @@ const ForgotPassword = () => {
 
                 <button
                     type="submit"
-                    className="w-full bg-blue text-white p-2 rounded font-semibold"
+                    className="w-full bg-[#3575E2] text-white p-2 rounded font-semibold"
                 >
                     {isLoading ? 'Processing...' : 'Send Reset Link'}
                 </button>

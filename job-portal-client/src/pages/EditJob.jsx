@@ -257,7 +257,7 @@ const EditJob = () => {
           {error && <div className="error">{error}</div>}
 
           {/* submit input */}
-          <button className="py-3 px-6 bg-blue text-white font-semibold rounded">
+          <button className="py-3 px-6 bg-[#3575E2] text-white font-semibold rounded">
             {loading ? "Updating..." : "Update Job"}
           </button>
         </form>

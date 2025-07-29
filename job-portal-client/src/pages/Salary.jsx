@@ -1,37 +1,29 @@
 import { useState } from "react";
-import Loader from "../components/Loader";
 
 const Salary = () => {
   const [jobTitle, setJobTitle] = useState("");
   const [location, setLocation] = useState("");
   const [experience, setExperience] = useState("");
   const [industry, setIndustry] = useState("");
-  const [salary, setSalary] = useState(null);
+  const [salaryRange, setSalaryRange] = useState(null);
+  const [comment, setComment] = useState("");
   const [error, setError] = useState("");
-
   const [isLoading, setIsLoading] = useState(false);
 
   const BASE_URL = `${import.meta.env.VITE_BACKEND_URL}/salary/estimate`;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     setError("");
+    setSalaryRange(null);
+    setComment("");
     setIsLoading(true);
 
     if (!jobTitle || !location || !experience || !industry) {
       setError("Please provide all fields");
+      setIsLoading(false);
       return;
     }
-
-    // Example static salary calculation
-    const baseSalary = 50000;
-    let estimatedSalary = baseSalary;
-
-    // Add logic for calculating salary based on user inputs
-    if (experience === "Entry") estimatedSalary *= 1;
-    else if (experience === "Mid") estimatedSalary *= 1.5;
-    else if (experience === "Senior") estimatedSalary *= 2;
 
     try {
       const res = await fetch(BASE_URL, {
@@ -39,28 +31,31 @@ const Salary = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ jobTitle, location, experience, industry }),
+        body: JSON.stringify({
+          jobTitle,
+          location,
+          experienceLevel: experience,
+          industry,
+        }),
       });
+
       const data = await res.json();
+
       if (res.ok) {
-        setSalary(data.estimatedSalary);
-        setError("");
-        setIsLoading(false);
+        setSalaryRange(data.estimatedSalary);
+        setComment(data.estimatedSalary.comment || "");
       } else {
-        setError(data.error);
-        setIsLoading(false);
+        setError(data.error || "Failed to estimate salary.");
       }
     } catch (error) {
-      setError(error.message);
-      console.log(error.message);
+      console.error(error.message);
+      setError("Server error while estimating salary.");
     }
 
-    setSalary(estimatedSalary);
-    setError("");
     setIsLoading(false);
   };
 
-  if (isLoading) return <Loader />;
+  if (isLoading) return <div className="text-gray-500 flex justify-center items-center min-h-screen">Loading...</div>;
 
   return (
     <div className="max-w-lg mx-auto p-4">
@@ -115,20 +110,26 @@ const Salary = () => {
 
         <button
           type="submit"
-          className="w-full py-2 px-4 bg-blue text-white rounded font-semibold"
+          className="w-full py-2 px-4 bg-blue-500 text-white rounded font-semibold"
         >
           {isLoading ? "Calculating..." : "Calculate Salary"}
         </button>
       </form>
 
-      <div className="mt-5 text-center">
-        <h2 className="text-xl font-semibold">
-          Estimated Salary:
-          <span className="text-blue font-light ml-2">
-            {salary ? `$${salary.toLocaleString()}` : "$0"}
-          </span>
-        </h2>
-      </div>
+      {salaryRange && (
+        <div className="mt-5 text-center">
+          <h2 className="text-xl font-semibold mb-2">
+            Estimated Salary Range:
+          </h2>
+          <p className="text-blue text-lg font-light">
+            ${salaryRange.min.toLocaleString()} – $
+            {salaryRange.max.toLocaleString()}
+          </p>
+          {comment && (
+            <p className="text-sm mt-2 text-gray-600 italic">{comment}</p>
+          )}
+        </div>
+      )}
 
       {error && (
         <div className="mt-4 text-red-500">
