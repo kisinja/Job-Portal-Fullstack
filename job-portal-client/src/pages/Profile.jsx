@@ -226,7 +226,7 @@ const Profile = () => {
           <nav className="flex -mb-px">
             <Link
               to={`/profile/${userId}`}
-              className={`flex items-center gap-2 py-4 px-6 font-medium text-sm ${
+              className={`flex items-center gap-2 py-4 px-12 font-medium text-sm ${
                 activeTab === "profile"
                   ? "border-b-2 border-blue-500 text-blue-600"
                   : "text-gray-500 hover:text-gray-700"
@@ -252,11 +252,11 @@ const Profile = () => {
         </div>
 
         {/* Tab Content */}
-        <div className="p-6">
+        <div className="py-6 px-12">
           {loading ? (
             <Loader />
           ) : activeTab === "profile" ? (
-            <div className="max-w-3xl mx-auto">
+            <div className="max-w-7xl">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-xl font-semibold text-gray-800">
                   Your Profile Information
