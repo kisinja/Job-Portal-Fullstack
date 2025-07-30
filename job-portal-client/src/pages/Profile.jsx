@@ -10,6 +10,10 @@ import {
   FiBriefcase,
   FiEye,
   FiEyeOff,
+  FiFileText,
+  FiDownload,
+  FiMail,
+  FiPhone,
 } from "react-icons/fi";
 
 const Profile = () => {
@@ -17,6 +21,7 @@ const Profile = () => {
   const { userId } = useParams();
   const location = useLocation();
   const BASE_URL = `${import.meta.env.VITE_BACKEND_URL}/profile`;
+  const RESUME_URL = `${import.meta.env.VITE_BACKEND_URL}/resumes`;
 
   const [userProfile, setUserProfile] = useState({
     username: "",
@@ -34,9 +39,10 @@ const Profile = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
-  const [activeTab, setActiveTab] = useState("profile");
-
+  const [activeTab, setActiveTab] = useState("resume");
   const [success, setSuccess] = useState("");
+  const [resume, setResume] = useState(null);
+  const [resumeLoading, setResumeLoading] = useState(false);
 
   useEffect(() => {
     const getProfile = async () => {
@@ -69,10 +75,72 @@ const Profile = () => {
     // Set active tab based on URL
     if (location.pathname.includes("applied-jobs")) {
       setActiveTab("applied-jobs");
+    } else if (location.pathname.includes("resumes")) {
+      setActiveTab("resumes");
     } else {
       setActiveTab("profile");
     }
   }, [BASE_URL, user.token, userId, location.pathname]);
+
+  const fetchResume = async () => {
+    setResumeLoading(true);
+    try {
+      const res = await fetch(`${RESUME_URL}`, {
+        method: "GET",
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        setResume(data);
+      } else {
+        setError(data.error || "Failed to fetch resume");
+      }
+    } catch (error) {
+      console.log(error.message);
+      setError("Failed to fetch resume");
+    } finally {
+      setResumeLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === "resumes") {
+      fetchResume();
+    }
+  }, [activeTab]);
+
+  const handleDownloadPDF = async () => {
+    try {
+      const res = await fetch(`${RESUME_URL}/${resume._id}/pdf`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Failed to download resume PDF");
+      }
+
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `resume_${userProfile.username}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error("Error downloading PDF:", error);
+      setError(error.message);
+    }
+  };
 
   const handleChange = (e) => {
     setUserProfile({
@@ -175,6 +243,337 @@ const Profile = () => {
     }
   };
 
+  const renderResumePreview = () => {
+    if (resumeLoading) return <Loader />;
+    if (!resume)
+      return (
+        <div className="text-center py-12">
+          <FiFileText className="mx-auto text-4xl text-gray-400 mb-4" />
+          <h3 className="text-lg font-medium text-gray-900">No Resume Found</h3>
+          <p className="mt-2 text-gray-500">
+            Create your first resume to get started
+          </p>
+          <Link
+            to="/create-resume"
+            className="mt-6 inline-block px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          >
+            Create Resume
+          </Link>
+        </div>
+      );
+
+    return (
+      <div className="relative">
+        {/* Floating Download Button */}
+        <div className="fixed bottom-8 right-8 z-10">
+          <button
+            onClick={handleDownloadPDF}
+            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full shadow-xl hover:shadow-2xl transition-all hover:scale-105"
+          >
+            <FiDownload className="text-lg" />
+            <span>Download PDF</span>
+          </button>
+        </div>
+
+        {/* Resume Preview - Mimics Paper */}
+        <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-2xl overflow-hidden transform transition-all hover:shadow-3xl">
+          {/* Resume Header with Gradient */}
+          <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-8 text-white">
+            <div className="flex flex-col md:flex-row items-center gap-6">
+              <div className="w-32 h-32 rounded-full border-4 border-white bg-white flex items-center justify-center">
+                {resume.personalInfo?.profilePic ? (
+                  <img
+                    src={resume.personalInfo.profilePic}
+                    alt="Profile"
+                    className="w-full h-full rounded-full object-cover"
+                  />
+                ) : (
+                  <FiUser className="text-4xl text-indigo-600" />
+                )}
+              </div>
+              <div className="text-center md:text-left">
+                <h1 className="text-3xl font-bold">
+                  {resume.personalInfo?.fullName || "Your Name"}
+                </h1>
+                <p className="text-indigo-100 text-lg mt-1">
+                  {resume.personalInfo?.title || "Professional Title"}
+                </p>
+                <div className="flex flex-wrap gap-2 mt-3 justify-center md:justify-start">
+                  {resume.personalInfo?.email && (
+                    <a
+                      href={`mailto:${resume.personalInfo.email}`}
+                      className="flex items-center gap-1 text-sm bg-white/20 px-3 py-1 rounded-full"
+                    >
+                      <FiMail /> {resume.personalInfo.email}
+                    </a>
+                  )}
+                  {resume.personalInfo?.phone && (
+                    <a
+                      href={`tel:${resume.personalInfo.phone}`}
+                      className="flex items-center gap-1 text-sm bg-white/20 px-3 py-1 rounded-full"
+                    >
+                      <FiPhone /> {resume.personalInfo.phone}
+                    </a>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Resume Content */}
+          <div className="p-8">
+            {/* Summary Section */}
+            {resume.personalInfo?.summary && (
+              <div className="mb-8">
+                <h2 className="text-xl font-bold text-indigo-700 mb-2 border-b-2 border-indigo-100 pb-2">
+                  Professional Summary
+                </h2>
+                <p className="text-gray-700 leading-relaxed">
+                  {resume.personalInfo.summary}
+                </p>
+              </div>
+            )}
+
+            {/* Experience Section */}
+            {resume.experience?.length > 0 && (
+              <div className="mb-8">
+                <h2 className="text-xl font-bold text-indigo-700 mb-4 border-b-2 border-indigo-100 pb-2">
+                  Work Experience
+                </h2>
+                <div className="space-y-6">
+                  {resume.experience.map((exp, index) => (
+                    <div
+                      key={index}
+                      className="relative pl-8 before:absolute before:left-0 before:top-2 before:w-4 before:h-4 before:rounded-full before:bg-indigo-500 before:border-4 before:border-indigo-100"
+                    >
+                      <div className="flex flex-col md:flex-row md:justify-between">
+                        <h3 className="text-lg font-semibold text-gray-800">
+                          {exp.role} at {exp.company}
+                        </h3>
+                        <p className="text-indigo-600">
+                          {new Date(exp.startDate).toLocaleDateString()} -{" "}
+                          {exp.endDate
+                            ? new Date(exp.endDate).toLocaleDateString()
+                            : "Present"}
+                        </p>
+                      </div>
+                      {exp.location && (
+                        <p className="text-gray-500 text-sm">{exp.location}</p>
+                      )}
+                      <p className="mt-2 text-gray-700 whitespace-pre-line">
+                        {exp.description}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Education Section */}
+            {resume.education?.length > 0 && (
+              <div className="mb-8">
+                <h2 className="text-xl font-bold text-indigo-700 mb-4 border-b-2 border-indigo-100 pb-2">
+                  Education
+                </h2>
+                <div className="space-y-6">
+                  {resume.education.map((edu, index) => (
+                    <div
+                      key={index}
+                      className="relative pl-8 before:absolute before:left-0 before:top-2 before:w-4 before:h-4 before:rounded-full before:bg-indigo-500 before:border-4 before:border-indigo-100"
+                    >
+                      <div className="flex flex-col md:flex-row md:justify-between">
+                        <h3 className="text-lg font-semibold text-gray-800">
+                          {edu.degree} in {edu.fieldOfStudy}
+                        </h3>
+                        <p className="text-indigo-600">
+                          {new Date(edu.startDate).toLocaleDateString()} -{" "}
+                          {edu.endDate
+                            ? new Date(edu.endDate).toLocaleDateString()
+                            : "Present"}
+                        </p>
+                      </div>
+                      <p className="text-gray-700">{edu.institution}</p>
+                      {edu.location && (
+                        <p className="text-gray-500 text-sm">{edu.location}</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Two Column Layout for Skills, Projects, etc. */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Skills Section */}
+              {resume.skills?.length > 0 && (
+                <div>
+                  <h2 className="text-xl font-bold text-indigo-700 mb-4 border-b-2 border-indigo-100 pb-2">
+                    Skills
+                  </h2>
+                  <div className="flex flex-wrap gap-2">
+                    {resume.skills.map((skill, index) => (
+                      <span
+                        key={index}
+                        className="px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full text-sm font-medium"
+                      >
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Languages Section */}
+              {resume.languages?.length > 0 && (
+                <div>
+                  <h2 className="text-xl font-bold text-indigo-700 mb-4 border-b-2 border-indigo-100 pb-2">
+                    Languages
+                  </h2>
+                  <div className="space-y-2">
+                    {resume.languages.map((lang, index) => (
+                      <div
+                        key={index}
+                        className="flex justify-between items-center"
+                      >
+                        <span className="font-medium">{lang.name}</span>
+                        <div className="w-32 bg-gray-200 rounded-full h-2.5">
+                          <div
+                            className="bg-indigo-600 h-2.5 rounded-full"
+                            style={{
+                              width: `${getProficiencyWidth(
+                                lang.proficiency
+                              )}%`,
+                            }}
+                          ></div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Projects Section */}
+              {resume.projects?.length > 0 && (
+                <div className="md:col-span-2">
+                  <h2 className="text-xl font-bold text-indigo-700 mb-4 border-b-2 border-indigo-100 pb-2">
+                    Projects
+                  </h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {resume.projects.map((proj, index) => (
+                      <div key={index} className="bg-indigo-50 p-4 rounded-lg">
+                        <h3 className="font-semibold text-indigo-800">
+                          {proj.title}
+                        </h3>
+                        <p className="mt-2 text-gray-700">{proj.description}</p>
+                        {proj.link && (
+                          <a
+                            href={proj.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-block mt-2 text-indigo-600 hover:underline"
+                          >
+                            View Project
+                          </a>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Certifications Section */}
+              {resume.certifications?.length > 0 && (
+                <div className="md:col-span-2">
+                  <h2 className="text-xl font-bold text-indigo-700 mb-4 border-b-2 border-indigo-100 pb-2">
+                    Certifications
+                  </h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {resume.certifications.map((cert, index) => (
+                      <div
+                        key={index}
+                        className="border-l-4 border-indigo-500 pl-4"
+                      >
+                        <h3 className="font-semibold text-gray-800">
+                          {cert.title}
+                        </h3>
+                        <p className="text-gray-600">
+                          {cert.issuingOrganization}
+                        </p>
+                        <p className="text-sm text-gray-500 mt-1">
+                          Issued:{" "}
+                          {new Date(cert.issueDate).toLocaleDateString()}
+                          {cert.expirationDate && (
+                            <span>
+                              {" "}
+                              • Expires:{" "}
+                              {new Date(
+                                cert.expirationDate
+                              ).toLocaleDateString()}
+                            </span>
+                          )}
+                        </p>
+                        {cert.credentialUrl && (
+                          <a
+                            href={cert.credentialUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-block mt-1 text-indigo-600 hover:underline text-sm"
+                          >
+                            View Credential
+                          </a>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Hobbies Section */}
+              {resume.hobbies?.length > 0 && (
+                <div className="md:col-span-2">
+                  <h2 className="text-xl font-bold text-indigo-700 mb-4 border-b-2 border-indigo-100 pb-2">
+                    Hobbies & Interests
+                  </h2>
+                  <div className="flex flex-wrap gap-3">
+                    {resume.hobbies.map((hobby, index) => (
+                      <span
+                        key={index}
+                        className="px-4 py-2 bg-white border border-indigo-100 text-indigo-800 rounded-full shadow-sm"
+                      >
+                        {hobby}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div className="bg-gray-50 p-4 text-center text-gray-500 text-sm">
+            Resume generated by TechPoster • {new Date().getFullYear()}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // Helper function for language proficiency visualization
+  const getProficiencyWidth = (proficiency) => {
+    switch (proficiency.toLowerCase()) {
+      case "native":
+        return 100;
+      case "fluent":
+        return 80;
+      case "intermediate":
+        return 60;
+      case "basic":
+        return 40;
+      default:
+        return 20;
+    }
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 my-12">
       <div className="bg-white rounded-xl shadow-md overflow-hidden">
@@ -224,9 +623,9 @@ const Profile = () => {
         {/* Tab Navigation */}
         <div className="border-b border-gray-200">
           <nav className="flex -mb-px">
-            <Link
-              to={`/profile/${userId}`}
-              className={`flex items-center gap-2 py-4 px-12 font-medium text-sm ${
+            <button
+              onClick={() => setActiveTab("profile")}
+              className={`flex items-center gap-2 py-4 px-6 font-medium text-sm ${
                 activeTab === "profile"
                   ? "border-b-2 border-blue-500 text-blue-600"
                   : "text-gray-500 hover:text-gray-700"
@@ -234,25 +633,38 @@ const Profile = () => {
             >
               <FiUser className="text-lg" />
               Profile
-            </Link>
-            {user?.role === "candidate" && (
-              <Link
-                to={`/jobs/applied/${userId}`}
-                className={`flex items-center gap-2 py-4 px-6 font-medium text-sm ${
-                  activeTab === "applied-jobs"
-                    ? "border-b-2 border-blue-500 text-blue-600"
-                    : "text-gray-500 hover:text-gray-700"
-                }`}
-              >
-                <FiBriefcase className="text-lg" />
-                Applied Jobs
-              </Link>
+            </button>
+            {user?.role === "job-seeker" && (
+              <>
+                <button
+                  onClick={() => setActiveTab("applied-jobs")}
+                  className={`flex items-center gap-2 py-4 px-6 font-medium text-sm ${
+                    activeTab === "applied-jobs"
+                      ? "border-b-2 border-blue-500 text-blue-600"
+                      : "text-gray-500 hover:text-gray-700"
+                  }`}
+                >
+                  <FiBriefcase className="text-lg" />
+                  Applied Jobs
+                </button>
+                <button
+                  onClick={() => setActiveTab("resumes")}
+                  className={`flex items-center gap-2 py-4 px-6 font-medium text-sm ${
+                    activeTab === "resumes"
+                      ? "border-b-2 border-blue-500 text-blue-600"
+                      : "text-gray-500 hover:text-gray-700"
+                  }`}
+                >
+                  <FiFileText className="text-lg" />
+                  My Resumes
+                </button>
+              </>
             )}
           </nav>
         </div>
 
         {/* Tab Content */}
-        <div className="py-6 px-12">
+        <div className="p-6">
           {loading ? (
             <Loader />
           ) : activeTab === "profile" ? (
@@ -497,7 +909,7 @@ const Profile = () => {
                 )}
               </form>
             </div>
-          ) : (
+          ) : activeTab === "applied-jobs" ? (
             <div className="text-center py-12">
               <FiBriefcase className="mx-auto text-4xl text-gray-400 mb-4" />
               <h3 className="text-lg font-medium text-gray-900">
@@ -513,7 +925,9 @@ const Profile = () => {
                 Browse Jobs
               </Link>
             </div>
-          )}
+          ) : activeTab === "resumes" ? (
+            renderResumePreview()
+          ) : null}
         </div>
       </div>
     </div>
