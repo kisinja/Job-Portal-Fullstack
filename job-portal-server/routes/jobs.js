@@ -5,7 +5,6 @@ const router = express.Router();
 
 // middleware
 import requireAuth from '../middleware/requireAuth.js';
-import { checkQualificationMiddleware } from '../middleware/checkQualificationMiddleware.js';
 
 // use middleware
 /* router.use(requireAuth); */

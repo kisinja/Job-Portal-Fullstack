@@ -46,7 +46,10 @@ export const getJobs = async (req, res) => {
 // get a job by id
 export const getJobById = async (req, res) => {
   try {
-    const job = await Job.findById(req.params.id).populate("postedBy", "username email");
+    const job = await Job.findById(req.params.id).populate(
+      "postedBy",
+      "username email"
+    );
     if (!job) {
       res.status(400).json({ error: "No job found" });
     }
@@ -63,12 +66,15 @@ export const getJobByUserId = async (req, res) => {
   const { userId } = req.params;
 
   try {
-    const jobs = await Job.find({ postedBy: userId }).populate("postedBy", "username email");
+    const jobs = await Job.find({ postedBy: userId }).populate(
+      "postedBy",
+      "username email"
+    );
     if (!jobs) {
       res.status(400).json({ error: "No jobs found" });
     }
 
-    res.status(200).json(jobs);
+    res.status(200).json({ jobs });
   } catch (error) {
     console.log(error.message);
     res.json({ error: error.message }).status(500);
